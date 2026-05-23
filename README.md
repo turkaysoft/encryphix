@@ -24,6 +24,7 @@ You can support this project by making a donation to help ensure its sustainabil
 * **Multilingual:** Fully supports 15+ languages including English, Turkish, German, and more.
 * **Portable:** No installation required. Carry your encryption tool anywhere and run it instantly.
 * **Completely Free:** High-end encryption features provided at no cost to the user.
+* **Built-in Update Mechanism:** It features a built-in smart update mechanism developed specifically by **Türkaysoft**.
 
 ---
 
