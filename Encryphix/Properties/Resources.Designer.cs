@@ -63,6 +63,26 @@ namespace Encryphix.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
         /// </summary>
+        internal static System.Drawing.Bitmap ct_copy_mc_dark {
+            get {
+                object obj = ResourceManager.GetObject("ct_copy_mc_dark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
+        internal static System.Drawing.Bitmap ct_copy_mc_light {
+            get {
+                object obj = ResourceManager.GetObject("ct_copy_mc_light", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
         internal static System.Drawing.Bitmap ct_decrypt_dark {
             get {
                 object obj = ResourceManager.GetObject("ct_decrypt_dark", resourceCulture);
@@ -116,6 +136,26 @@ namespace Encryphix.Properties {
         internal static System.Drawing.Bitmap ct_folder_light {
             get {
                 object obj = ResourceManager.GetObject("ct_folder_light", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
+        internal static System.Drawing.Bitmap ct_generate_dark {
+            get {
+                object obj = ResourceManager.GetObject("ct_generate_dark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
+        internal static System.Drawing.Bitmap ct_generate_light {
+            get {
+                object obj = ResourceManager.GetObject("ct_generate_light", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -293,6 +333,26 @@ namespace Encryphix.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
         /// </summary>
+        internal static System.Drawing.Bitmap tm_password_generator_dark {
+            get {
+                object obj = ResourceManager.GetObject("tm_password_generator_dark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
+        internal static System.Drawing.Bitmap tm_password_generator_light {
+            get {
+                object obj = ResourceManager.GetObject("tm_password_generator_light", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
         internal static System.Drawing.Bitmap tm_safety_warnings_dark {
             get {
                 object obj = ResourceManager.GetObject("tm_safety_warnings_dark", resourceCulture);
@@ -366,26 +426,6 @@ namespace Encryphix.Properties {
         internal static System.Drawing.Bitmap tm_theme_light {
             get {
                 object obj = ResourceManager.GetObject("tm_theme_light", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
-        /// </summary>
-        internal static System.Drawing.Bitmap tm_ts_wizard_dark {
-            get {
-                object obj = ResourceManager.GetObject("tm_ts_wizard_dark", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
-        /// </summary>
-        internal static System.Drawing.Bitmap tm_ts_wizard_light {
-            get {
-                object obj = ResourceManager.GetObject("tm_ts_wizard_light", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

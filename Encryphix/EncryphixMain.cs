@@ -1,11 +1,11 @@
 ﻿// ======================================================================================================
 // Encryphix - File and Folder Encryption Software
 // © Copyright 2025-2026, Eray Türkay.
-// Publisher: Türkay Software
+// Publisher: Türkaysoft
 // Project Type: Open Source
 // License: MIT License
-// Website: https://www.turkaysoftware.com/encryphix
-// GitHub: https://github.com/turkaysoftware/encryphix
+// Website: https://turkaysoft.com
+// GitHub: https://github.com/turkaysoft/encryphix
 // ======================================================================================================
 
 using Microsoft.Win32;
@@ -17,9 +17,8 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,23 +77,28 @@ namespace Encryphix{
         // ======================================================================================================
         public static class TSProtectionErrorMessages{
             public static Dictionary<string, string> Messages = new Dictionary<string, string>(){
-                { "FolderEncryptionError", "" },
-                { "SaltReadError", "" },
-                { "FileTypeReadError", "" },
-                { "ExtLengthReadError", "" },
-                { "InvalidExtensionLength", "" },
-                { "ExtensionReadError", "" },
-                { "IVReadError", "" },
-                { "InvalidPasswordOrCorruptFile", "" },
-                { "AccessError", "" },
-                { "UnknownError", "" },
+                { "FolderEncryptionError", "An error occurred while encrypting the folder" },
+                { "SaltReadError", "Failed to read salt data from the encrypted file" },
+                { "FileTypeReadError", "Failed to read file type information" },
+                { "ExtLengthReadError", "Failed to read extension length information" },
+                { "InvalidExtensionLength", "The extension length value is invalid or corrupted" },
+                { "ExtensionReadError", "Failed to read original file extension" },
+                { "IVReadError", "Failed to read initialization vector data" },
+                { "InvalidPasswordOrCorruptFile", "Invalid password or corrupted encrypted file" },
+                { "AccessError", "Access denied while processing the file or directory" },
+                { "UnknownError", "An unknown error occurred" },
+                { "InvalidFolderPath", "Folder path cannot be null or empty" },
+                { "InvalidPassword", "Password cannot be null or empty" },
+                { "FolderNotFound", "The specified folder could not be found" },
+                { "InvalidInputFile", "Input file path cannot be null or empty" },
+                { "InvalidOutputFile", "Output file path cannot be null or empty" },
+                { "FileNotFound", "The specified file could not be found" },
             };
         }
         // LOCAL VARIABLES
         // ======================================================================================================
         int themeSystem, startup_status, safety_warnings_status;
         bool p_mode, p_visible = true;
-        readonly string ts_wizard_name = "TS Wizard";
         CompressionLevel compress_level = CompressionLevel.NoCompression;
         // ======================================================================================================
         // COLOR MODES
@@ -165,6 +169,8 @@ namespace Encryphix{
             FAF_DGV.ClearSelection();
             // DPI SET TEXTBOX BUTTONS
             BtnShowPassword.Height = TextBox_Password.Height + 2;
+            BtnRndPssGen.Height = TextBox_Password.Height + 2;
+            BtnCopyPassword.Height = TextBox_Password.Height + 2;
             BtnSavePath.Height = TextBox_SaveFolder.Height + 2;
             // COMBOBOX ADD ITEMS
             Combo_Compress.Items.Add("Low");
@@ -577,6 +583,42 @@ namespace Encryphix{
             MainToolTip.SetToolTip(BtnShowPassword, p_visible ? software_lang.TSReadLangs("EncryphixGraphics", "eg_password_show_hover") : software_lang.TSReadLangs("EncryphixGraphics", "eg_password_hide_hover"));
             TSImageRenderer(BtnShowPassword, theme == 0 ? (p_visible ? Properties.Resources.ct_hide_password_dark : Properties.Resources.ct_show_password_dark) : (p_visible ? Properties.Resources.ct_hide_password_light : Properties.Resources.ct_show_password_light), 10, ContentAlignment.MiddleCenter);
         }
+        // RANDOM PASSWORD GENERATOR
+        // ======================================================================================================
+        private readonly Random rnd_pass = new Random();
+        private void BtnRndPssGen_Click(object sender, EventArgs e){
+            GenerateRandomPassword();
+        }
+        private void GenerateRandomPassword(){
+            string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string lower = "abcdefghijklmnopqrstuvwxyz";
+            string digits = "0123456789";
+            string symbols = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+            var initialChars = new[] {
+                upper[rnd_pass.Next(upper.Length)],
+                lower[rnd_pass.Next(lower.Length)],
+                digits[rnd_pass.Next(digits.Length)],
+                symbols[rnd_pass.Next(symbols.Length)]
+            }.ToList();
+            string allChars = upper + lower + digits + symbols;
+            initialChars.AddRange(Enumerable.Range(0, rnd_pass.Next(10, 18) - initialChars.Count).Select(_ => allChars[rnd_pass.Next(allChars.Length)]));
+            for (int i = initialChars.Count - 1; i > 0; i--){
+                int j = rnd_pass.Next(i + 1);
+                (initialChars[j], initialChars[i]) = (initialChars[i], initialChars[j]);
+            }
+            TextBox_Password.Text = new string(initialChars.ToArray());
+        }
+        // COPY PASSWORD
+        // ======================================================================================================
+        private void BtnCopyPassword_Click(object sender, EventArgs e){
+            try{
+                if (!string.IsNullOrEmpty(TextBox_Password.Text.Trim())){
+                    Clipboard.SetText(TextBox_Password.Text.Trim());
+                    TSGetLangs software_lang = new TSGetLangs(lang_path);
+                    TS_MessageBoxEngine.TS_MessageBox(this, 1, software_lang.TSReadLangs("EncryphixGraphics", "eg_password_copy_message"));
+                }
+            }catch (Exception){ }
+        }
         // SAVE LOCATION SET BTN
         // ======================================================================================================
         private void BtnSavePath_Click(object sender, EventArgs e){
@@ -641,11 +683,13 @@ namespace Encryphix{
                     TSImageRenderer(startupToolStripMenuItem, Properties.Resources.tm_startup_light, 0, ContentAlignment.MiddleRight);
                     TSImageRenderer(safetyWarningsToolStripMenuItem, Properties.Resources.tm_safety_warnings_light, 0, ContentAlignment.MiddleRight);
                     TSImageRenderer(checkForUpdateToolStripMenuItem, Properties.Resources.tm_update_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(tSWizardToolStripMenuItem, Properties.Resources.tm_ts_wizard_light, 0, ContentAlignment.MiddleRight);
+                    TSImageRenderer(passwordGeneratorToolStripMenuItem, Properties.Resources.tm_password_generator_light, 0, ContentAlignment.MiddleRight);
                     TSImageRenderer(donateToolStripMenuItem, Properties.Resources.tm_donate_light, 0, ContentAlignment.MiddleRight);
                     TSImageRenderer(aboutToolStripMenuItem, Properties.Resources.tm_about_light, 0, ContentAlignment.MiddleRight);
                     //
                     TSImageRenderer(BtnShowPassword, p_visible ? Properties.Resources.ct_hide_password_light : Properties.Resources.ct_show_password_light, 10, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(BtnRndPssGen, Properties.Resources.ct_generate_light, 10, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(BtnCopyPassword, Properties.Resources.ct_copy_mc_light, 12, ContentAlignment.MiddleCenter);
                     TSImageRenderer(BtnSavePath, Properties.Resources.ct_folder_light, 12, ContentAlignment.MiddleCenter);
                     //
                     TSImageRenderer(BtnSelect, Properties.Resources.ct_folder_light, 19, ContentAlignment.MiddleLeft);
@@ -658,11 +702,13 @@ namespace Encryphix{
                     TSImageRenderer(startupToolStripMenuItem, Properties.Resources.tm_startup_dark, 0, ContentAlignment.MiddleRight);
                     TSImageRenderer(safetyWarningsToolStripMenuItem, Properties.Resources.tm_safety_warnings_dark, 0, ContentAlignment.MiddleRight);
                     TSImageRenderer(checkForUpdateToolStripMenuItem, Properties.Resources.tm_update_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(tSWizardToolStripMenuItem, Properties.Resources.tm_ts_wizard_dark, 0, ContentAlignment.MiddleRight);
+                    TSImageRenderer(passwordGeneratorToolStripMenuItem, Properties.Resources.tm_password_generator_dark, 0, ContentAlignment.MiddleRight);
                     TSImageRenderer(donateToolStripMenuItem, Properties.Resources.tm_donate_dark, 0, ContentAlignment.MiddleRight);
                     TSImageRenderer(aboutToolStripMenuItem, Properties.Resources.tm_about_dark, 0, ContentAlignment.MiddleRight);
                     //
                     TSImageRenderer(BtnShowPassword, p_visible ? Properties.Resources.ct_hide_password_dark : Properties.Resources.ct_show_password_dark, 10, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(BtnRndPssGen, Properties.Resources.ct_generate_dark, 10, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(BtnCopyPassword, Properties.Resources.ct_copy_mc_dark, 12, ContentAlignment.MiddleCenter);
                     TSImageRenderer(BtnSavePath, Properties.Resources.ct_folder_dark, 12, ContentAlignment.MiddleCenter);
                     //
                     TSImageRenderer(BtnSelect, Properties.Resources.ct_folder_dark, 19, ContentAlignment.MiddleLeft);
@@ -772,6 +818,17 @@ namespace Encryphix{
             }
         }
         private void Software_other_page_preloader(){
+            // PASSWORD GENERATOR
+            try{
+                EncryphixPasswordGenerator software_pass_generator = new EncryphixPasswordGenerator();
+                string software_pass_generator_name = "encryphix_password_generator";
+                software_pass_generator.Name = software_pass_generator_name;
+                if (Application.OpenForms[software_pass_generator_name] != null)
+                {
+                    software_pass_generator = (EncryphixPasswordGenerator)Application.OpenForms[software_pass_generator_name];
+                    software_pass_generator.Password_generator_preloader();
+                }
+            }catch (Exception) { }
             // SOFTWARE ABOUT
             try{
                 EncryphixAbout software_about = new EncryphixAbout();
@@ -836,6 +893,12 @@ namespace Encryphix{
                 TSProtectionErrorMessages.Messages["InvalidPasswordOrCorruptFile"] = software_lang.TSReadLangs("TSProtection", "tsp_invalid_password_or_corrupt_file");
                 TSProtectionErrorMessages.Messages["AccessError"] = software_lang.TSReadLangs("TSProtection", "tsp_access_error");
                 TSProtectionErrorMessages.Messages["UnknownError"] = software_lang.TSReadLangs("TSProtection", "tsp_unknown_error");
+                TSProtectionErrorMessages.Messages["InvalidFolderPath"] = software_lang.TSReadLangs("TSProtection", "tsp_invalid_folder_path");
+                TSProtectionErrorMessages.Messages["InvalidPassword"] = software_lang.TSReadLangs("TSProtection", "tsp_invalid_password");
+                TSProtectionErrorMessages.Messages["FolderNotFound"] = software_lang.TSReadLangs("TSProtection", "tsp_folder_not_found");
+                TSProtectionErrorMessages.Messages["InvalidInputFile"] = software_lang.TSReadLangs("TSProtection", "tsp_invalid_input_file");
+                TSProtectionErrorMessages.Messages["InvalidOutputFile"] = software_lang.TSReadLangs("TSProtection", "tsp_invalid_output_file");
+                TSProtectionErrorMessages.Messages["FileNotFound"] = software_lang.TSReadLangs("TSProtection", "tsp_file_not_found");
                 // SETTINGS
                 settingsToolStripMenuItem.Text = software_lang.TSReadLangs("HeaderMenu", "header_menu_settings");
                 // THEMES
@@ -870,8 +933,8 @@ namespace Encryphix{
                 safetyWarningsOffToolStripMenuItem.Text = software_lang.TSReadLangs("SafetyWarnings", "sw_off");
                 // UPDATE
                 checkForUpdateToolStripMenuItem.Text = software_lang.TSReadLangs("HeaderMenu", "header_menu_update");
-                // TS WIZARD
-                tSWizardToolStripMenuItem.Text = software_lang.TSReadLangs("HeaderMenu", "header_menu_ts_wizard");
+                // PASSWORD GENERATOR
+                passwordGeneratorToolStripMenuItem.Text = software_lang.TSReadLangs("HeaderMenu", "header_menu_pass_gen");
                 // DONATE
                 donateToolStripMenuItem.Text = software_lang.TSReadLangs("HeaderMenu", "header_menu_donate");
                 // ABOUT
@@ -907,6 +970,8 @@ namespace Encryphix{
                 //
                 MainToolTip.RemoveAll();
                 MainToolTip.SetToolTip(BtnShowPassword, p_visible ? software_lang.TSReadLangs("EncryphixGraphics", "eg_password_show_hover") : software_lang.TSReadLangs("EncryphixGraphics", "eg_password_hide_hover"));
+                MainToolTip.SetToolTip(BtnRndPssGen, software_lang.TSReadLangs("EncryphixGraphics", "eg_password_generate_hover"));
+                MainToolTip.SetToolTip(BtnCopyPassword, software_lang.TSReadLangs("EncryphixGraphics", "eg_password_copy_hover"));
                 MainToolTip.SetToolTip(BtnSavePath, software_lang.TSReadLangs("EncryphixGraphics", "eg_saved_folder_hover"));
                 MainToolTip.SetToolTip(CheckOrjFileDelete, software_lang.TSReadLangs("EncryphixGraphics", "eg_saved_orj_file_hover"));
             }catch (Exception){ }
@@ -970,82 +1035,68 @@ namespace Encryphix{
                 software_setting_save.TSWriteSettings(ts_settings_container, "SafetyWarnings", get_safety_warnings_value);
             }catch (Exception){ }
         }
-        // SOFTWARE OPERATION CONTROLLER MODULE
-        // ======================================================================================================
-        private static bool Software_operation_controller(string __target_software_path){
-            var exeFiles = Directory.GetFiles(__target_software_path, "*.exe");
-            var runned_process = Process.GetProcesses();
-            foreach (var exe_path in exeFiles){
-                string exe_name = Path.GetFileNameWithoutExtension(exe_path);
-                if (runned_process.Any(p => {
-                    try{
-                        return string.Equals(p.ProcessName, exe_name, StringComparison.OrdinalIgnoreCase);
-                    }catch{
-                        return false;
-                    }
-                })){
-                    return true;
-                }
-            }
-            return false;
-        }
-        // TS WIZARD STARTER MODE
-        // ======================================================================================================
-        private string[] Ts_wizard_starter_mode(){
-            string[] ts_wizard_exe_files = { "TSWizard_arm64.exe", "TSWizard_x64.exe", "TSWizard.exe" };
-            if (RuntimeInformation.OSArchitecture == Architecture.Arm64){
-                return new[] { ts_wizard_exe_files[0], ts_wizard_exe_files[1], ts_wizard_exe_files[2] }; // arm64 > x64 > default
-            }else if (Environment.Is64BitOperatingSystem){
-                return new[] { ts_wizard_exe_files[1], ts_wizard_exe_files[0], ts_wizard_exe_files[2] }; // x64 > arm64 > default
-            }else{
-                return new[] { ts_wizard_exe_files[2], ts_wizard_exe_files[1], ts_wizard_exe_files[0] }; // default > x64 > arm64
-            }
-        }
         // UPDATE CHECK ENGINE
         // ======================================================================================================
         private void CheckForUpdateToolStripMenuItem_Click(object sender, EventArgs e){
             Task.Run(() => Software_update_check(1));
         }
-        public void Software_update_check(int _check_update_ui){
+        public async void Software_update_check(int _check_update_ui){
             try{
                 TSGetLangs software_lang = new TSGetLangs(lang_path);
                 SetUpdateMenuEnabled(false);
-                if (!IsNetworkCheck()){
+                if (!await IsNetworkAvailable()){
                     if (_check_update_ui == 1){
                         TS_MessageBoxEngine.TS_MessageBox(this, 2, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_not_connection"), "\n\n"), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
                     }
                     return;
                 }
-                using (WebClient getLastVersion = new WebClient()){
-                    string client_version_raw = TS_VersionParser.ParseUINormalize(Application.ProductVersion);
-                    string last_version_raw = TS_VersionParser.ParseUINormalize(getLastVersion.DownloadString(TS_LinkSystem.github_link_lv).Split('=')[1].Trim());
-                    Version client_ver = Version.Parse(client_version_raw);
-                    Version last_ver = Version.Parse(last_version_raw);
-                    if (client_ver < last_ver){
-                        string baseDir = Path.Combine(Directory.GetParent(Directory.GetParent(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).FullName).FullName);
-                        string ts_wizard_path = Ts_wizard_starter_mode().Select(name => Path.Combine(baseDir, name)).FirstOrDefault(File.Exists);
-                        if (!string.IsNullOrEmpty(ts_wizard_path) && File.Exists(ts_wizard_path)){
-                            if (!Software_operation_controller(Path.GetDirectoryName(ts_wizard_path))){
-                                DialogResult info_update = TS_MessageBoxEngine.TS_MessageBox(this, 5, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_available_ts_wizard"), Application.ProductName, "\n\n", client_version_raw, "\n", last_version_raw, "\n\n", ts_wizard_name), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
-                                if (info_update == DialogResult.Yes){
-                                    Process.Start(new ProcessStartInfo { FileName = ts_wizard_path, WorkingDirectory = Path.GetDirectoryName(ts_wizard_path) });
-                                }
-                            }else{
-                                if (_check_update_ui == 1){
-                                    TS_MessageBoxEngine.TS_MessageBox(this, 1, string.Format(software_lang.TSReadLangs("HeaderHelp", "header_help_info_notification"), ts_wizard_name));
+                using (HttpClientHandler handler = new HttpClientHandler()){
+                    handler.UseProxy = false;
+                    using (HttpClient httpClient = new HttpClient(handler)){
+                        httpClient.Timeout = TimeSpan.FromSeconds(15);
+                        httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue{ NoCache = true, NoStore = true, MustRevalidate = true };
+                        httpClient.DefaultRequestHeaders.Pragma.ParseAdd("no-cache");
+                        string versionUrl = TS_LinkSystem.github_link_lv;
+                        versionUrl += (versionUrl.Contains("?") ? "&" : "?") + "_ts=" + DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                        string response = await httpClient.GetStringAsync(versionUrl);
+                        string firstLine = response.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)[0];
+                        string client_version_raw = TS_VersionParser.ParseUINormalize(Application.ProductVersion);
+                        string last_version_raw = TS_VersionParser.ParseUINormalize(firstLine.Split(new[] { '=' }, 2)[1].Trim());
+                        Version client_ver = Version.Parse(client_version_raw);
+                        Version last_ver = Version.Parse(last_version_raw);
+                        if (client_ver < last_ver){
+                            DialogResult info_update = TS_MessageBoxEngine.TS_MessageBox(this, 5, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_available"), Application.ProductName, "\n\n", client_version_raw, "\n", last_version_raw, "\n\n"), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
+                            if (info_update == DialogResult.Yes){
+                                try{
+                                    string updaterPath = Path.Combine(Application.StartupPath, Program.updater_exe_name);
+                                    if (File.Exists(updaterPath)){
+                                        string procName = Path.GetFileNameWithoutExtension(updaterPath);
+                                        bool isRunning = Process.GetProcessesByName(procName).Length > 0;
+                                        if (!isRunning){
+                                            Process.Start(new ProcessStartInfo(updaterPath) { UseShellExecute = true, Arguments = $"-app={Application.ProductName}" });
+                                        }else{
+                                            TS_MessageBoxEngine.TS_MessageBox(this, 1, software_lang.TSReadLangs("SoftwareUpdate", "su_ts_updater_c_running"), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
+                                        }
+                                        Application.Exit();
+                                        return;
+                                    }else{
+                                        TS_MessageBoxEngine.TS_MessageBox(this, 2, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_ts_updater_not_available"), Program.updater_exe_name), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
+                                        Process.Start(new ProcessStartInfo(TS_LinkSystem.github_link_lr) { UseShellExecute = true });
+                                        Application.Exit();
+                                        return;
+                                    }
+                                }catch (Exception ex){
+                                    Debug.WriteLine(ex, $"{Program.updater_exe_name} launch block.");
                                 }
                             }
-                        }else{
-                            DialogResult info_update = TS_MessageBoxEngine.TS_MessageBox(this, 5, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_available"), Application.ProductName, "\n\n", client_version_raw, "\n", last_version_raw, "\n\n"), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
-                            if (info_update == DialogResult.Yes)
-                                Process.Start(new ProcessStartInfo(TS_LinkSystem.github_link_lr) { UseShellExecute = true });
+                        }else if (_check_update_ui == 1){
+                            string update_msg = client_ver == last_ver ? string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_not_available"), Application.ProductName, "\n", client_version_raw) : string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_newer"), "\n\n", $"v{client_version_raw}");
+                            TS_MessageBoxEngine.TS_MessageBox(this, 1, update_msg, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
                         }
-                    }else if (_check_update_ui == 1){
-                        string update_msg = client_ver == last_ver ? string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_not_available"), Application.ProductName, "\n", client_version_raw) : string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_newer"), "\n\n", $"v{client_version_raw}");
-                        TS_MessageBoxEngine.TS_MessageBox(this, 1, update_msg, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
                     }
                 }
             }catch (Exception ex){
+                Debug.WriteLine(ex, "Software_update_check()");
                 TSGetLangs software_lang = new TSGetLangs(lang_path);
                 TS_MessageBoxEngine.TS_MessageBox(this, 3, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_error"), "\n\n", ex.Message), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
             }finally{
@@ -1059,29 +1110,6 @@ namespace Encryphix{
                 checkForUpdateToolStripMenuItem.Enabled = enabled;
             }
         }
-        // TS WIZARD
-        // ======================================================================================================
-        private void TSWizardToolStripMenuItem_Click(object sender, EventArgs e){
-            try{
-                string baseDir = Path.Combine(Directory.GetParent(Directory.GetParent(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).FullName).FullName);
-                string ts_wizard_path = Ts_wizard_starter_mode().Select(name => Path.Combine(baseDir, name)).FirstOrDefault(File.Exists);
-                //
-                TSGetLangs software_lang = new TSGetLangs(lang_path);
-                //
-                if (ts_wizard_path != null){
-                    if (!Software_operation_controller(Path.GetDirectoryName(ts_wizard_path))){
-                        Process.Start(new ProcessStartInfo { FileName = ts_wizard_path, WorkingDirectory = Path.GetDirectoryName(ts_wizard_path) });
-                    }else{
-                        TS_MessageBoxEngine.TS_MessageBox(this, 1, string.Format(software_lang.TSReadLangs("HeaderHelp", "header_help_info_notification"), ts_wizard_name));
-                    }
-                }else{
-                    DialogResult ts_wizard_query = TS_MessageBoxEngine.TS_MessageBox(this, 5, string.Format(software_lang.TSReadLangs("TSWizard", "tsw_content"), software_lang.TSReadLangs("HeaderMenu", "header_menu_ts_wizard"), Application.CompanyName, "\n\n", Application.ProductName, Application.CompanyName, "\n\n"), string.Format("{0} - {1}", Application.ProductName, ts_wizard_name));
-                    if (ts_wizard_query == DialogResult.Yes){
-                        Process.Start(new ProcessStartInfo(TS_LinkSystem.ts_wizard) { UseShellExecute = true });
-                    }
-                }
-            }catch (Exception){ }
-        }
         // DONATE LINK
         // ======================================================================================================
         private void DonateToolStripMenuItem_Click(object sender, EventArgs e){
@@ -1089,6 +1117,8 @@ namespace Encryphix{
                 Process.Start(new ProcessStartInfo(TS_LinkSystem.ts_donate) { UseShellExecute = true });
             }catch (Exception){ }
         }
+
+     
         // TS TOOL LAUNCHER MODULE
         // ======================================================================================================
         private void TSToolLauncher<T>(string formName, string langKey) where T : Form, new(){
@@ -1106,6 +1136,11 @@ namespace Encryphix{
                     Application.OpenForms[formName].Activate();
                 }
             }catch (Exception){ }
+        }
+        // PASSWORD GENERATOR
+        // ======================================================================================================
+        private void PasswordGeneratorToolStripMenuItem_Click(object sender, EventArgs e){
+            TSToolLauncher<EncryphixPasswordGenerator>("encryphix_password_generator", "header_menu_pass_gen");
         }
         // ABOUT
         // ======================================================================================================

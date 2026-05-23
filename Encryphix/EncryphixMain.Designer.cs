@@ -37,6 +37,8 @@
             this.Progress_BG = new System.Windows.Forms.Panel();
             this.Progress_FE = new System.Windows.Forms.Panel();
             this.PanelControl = new System.Windows.Forms.Panel();
+            this.BtnRndPssGen = new Encryphix.TSCustomButton();
+            this.BtnCopyPassword = new Encryphix.TSCustomButton();
             this.Label_SaveFolder = new System.Windows.Forms.Label();
             this.Label_Compress = new System.Windows.Forms.Label();
             this.Combo_Compress = new Encryphix.TSCustomComboBox();
@@ -79,7 +81,7 @@
             this.safetyWarningsOnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.safetyWarningsOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tSWizardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.passwordGeneratorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainToolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -118,8 +120,8 @@
             // Progress_FE
             // 
             this.Progress_FE.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(111)))), ((int)(((byte)(141)))));
-            this.Progress_FE.Dock = System.Windows.Forms.DockStyle.Right;
-            this.Progress_FE.Location = new System.Drawing.Point(879, 0);
+            this.Progress_FE.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Progress_FE.Location = new System.Drawing.Point(0, 0);
             this.Progress_FE.Name = "Progress_FE";
             this.Progress_FE.Size = new System.Drawing.Size(99, 5);
             this.Progress_FE.TabIndex = 0;
@@ -127,6 +129,8 @@
             // PanelControl
             // 
             this.PanelControl.BackColor = System.Drawing.Color.White;
+            this.PanelControl.Controls.Add(this.BtnRndPssGen);
+            this.PanelControl.Controls.Add(this.BtnCopyPassword);
             this.PanelControl.Controls.Add(this.Label_SaveFolder);
             this.PanelControl.Controls.Add(this.Label_Compress);
             this.PanelControl.Controls.Add(this.Combo_Compress);
@@ -145,6 +149,47 @@
             this.PanelControl.Size = new System.Drawing.Size(978, 144);
             this.PanelControl.TabIndex = 2;
             // 
+            // BtnRndPssGen
+            // 
+            this.BtnRndPssGen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(111)))), ((int)(((byte)(141)))));
+            this.BtnRndPssGen.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(111)))), ((int)(((byte)(141)))));
+            this.BtnRndPssGen.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.BtnRndPssGen.BorderRadius = 5;
+            this.BtnRndPssGen.BorderSize = 0;
+            this.BtnRndPssGen.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnRndPssGen.FlatAppearance.BorderSize = 0;
+            this.BtnRndPssGen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnRndPssGen.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold);
+            this.BtnRndPssGen.ForeColor = System.Drawing.Color.White;
+            this.BtnRndPssGen.Location = new System.Drawing.Point(352, 37);
+            this.BtnRndPssGen.Name = "BtnRndPssGen";
+            this.BtnRndPssGen.Size = new System.Drawing.Size(27, 27);
+            this.BtnRndPssGen.TabIndex = 3;
+            this.BtnRndPssGen.TextColor = System.Drawing.Color.White;
+            this.BtnRndPssGen.UseVisualStyleBackColor = false;
+            this.BtnRndPssGen.Click += new System.EventHandler(this.BtnRndPssGen_Click);
+            // 
+            // BtnCopyPassword
+            // 
+            this.BtnCopyPassword.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(111)))), ((int)(((byte)(141)))));
+            this.BtnCopyPassword.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(111)))), ((int)(((byte)(141)))));
+            this.BtnCopyPassword.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.BtnCopyPassword.BorderRadius = 5;
+            this.BtnCopyPassword.BorderSize = 0;
+            this.BtnCopyPassword.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnCopyPassword.FlatAppearance.BorderSize = 0;
+            this.BtnCopyPassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnCopyPassword.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold);
+            this.BtnCopyPassword.ForeColor = System.Drawing.Color.White;
+            this.BtnCopyPassword.Location = new System.Drawing.Point(385, 37);
+            this.BtnCopyPassword.Margin = new System.Windows.Forms.Padding(3, 3, 12, 3);
+            this.BtnCopyPassword.Name = "BtnCopyPassword";
+            this.BtnCopyPassword.Size = new System.Drawing.Size(27, 27);
+            this.BtnCopyPassword.TabIndex = 4;
+            this.BtnCopyPassword.TextColor = System.Drawing.Color.White;
+            this.BtnCopyPassword.UseVisualStyleBackColor = false;
+            this.BtnCopyPassword.Click += new System.EventHandler(this.BtnCopyPassword_Click);
+            // 
             // Label_SaveFolder
             // 
             this.Label_SaveFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -155,7 +200,7 @@
             this.Label_SaveFolder.Margin = new System.Windows.Forms.Padding(3);
             this.Label_SaveFolder.Name = "Label_SaveFolder";
             this.Label_SaveFolder.Size = new System.Drawing.Size(143, 19);
-            this.Label_SaveFolder.TabIndex = 3;
+            this.Label_SaveFolder.TabIndex = 5;
             this.Label_SaveFolder.Text = "Kaydedilecek Konum:";
             // 
             // Label_Compress
@@ -163,11 +208,11 @@
             this.Label_Compress.AutoSize = true;
             this.Label_Compress.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
             this.Label_Compress.ForeColor = System.Drawing.Color.Black;
-            this.Label_Compress.Location = new System.Drawing.Point(352, 13);
+            this.Label_Compress.Location = new System.Drawing.Point(423, 13);
             this.Label_Compress.Margin = new System.Windows.Forms.Padding(3);
             this.Label_Compress.Name = "Label_Compress";
             this.Label_Compress.Size = new System.Drawing.Size(164, 19);
-            this.Label_Compress.TabIndex = 7;
+            this.Label_Compress.TabIndex = 8;
             this.Label_Compress.Text = "Klasör Sıkıştırma Düzeyi:";
             // 
             // Combo_Compress
@@ -189,13 +234,13 @@
             this.Combo_Compress.HoverBackColor = System.Drawing.SystemColors.Window;
             this.Combo_Compress.HoverButtonColor = System.Drawing.SystemColors.ControlDark;
             this.Combo_Compress.HoverForeColor = System.Drawing.SystemColors.WindowText;
-            this.Combo_Compress.Location = new System.Drawing.Point(356, 37);
-            this.Combo_Compress.Margin = new System.Windows.Forms.Padding(3, 3, 3, 15);
+            this.Combo_Compress.Location = new System.Drawing.Point(427, 37);
+            this.Combo_Compress.Margin = new System.Windows.Forms.Padding(3, 3, 15, 15);
             this.Combo_Compress.Name = "Combo_Compress";
             this.Combo_Compress.SelectedBackColor = System.Drawing.SystemColors.Highlight;
             this.Combo_Compress.SelectedForeColor = System.Drawing.SystemColors.HighlightText;
             this.Combo_Compress.Size = new System.Drawing.Size(250, 26);
-            this.Combo_Compress.TabIndex = 8;
+            this.Combo_Compress.TabIndex = 9;
             this.Combo_Compress.SelectedIndexChanged += new System.EventHandler(this.Combo_Compress_SelectedIndexChanged);
             // 
             // CheckOrjFileDelete
@@ -209,12 +254,12 @@
             this.CheckOrjFileDelete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CheckOrjFileDelete.DrawUncheckedFill = false;
             this.CheckOrjFileDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.CheckOrjFileDelete.Location = new System.Drawing.Point(356, 108);
+            this.CheckOrjFileDelete.Location = new System.Drawing.Point(352, 108);
             this.CheckOrjFileDelete.MaxBorderRadius = 8F;
             this.CheckOrjFileDelete.MaxBorderThickness = 4F;
             this.CheckOrjFileDelete.Name = "CheckOrjFileDelete";
             this.CheckOrjFileDelete.Size = new System.Drawing.Size(96, 21);
-            this.CheckOrjFileDelete.TabIndex = 6;
+            this.CheckOrjFileDelete.TabIndex = 10;
             this.CheckOrjFileDelete.Text = "Orijinali Sil";
             this.CheckOrjFileDelete.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.CheckOrjFileDelete.UncheckedBackColor = System.Drawing.Color.Transparent;
@@ -226,11 +271,11 @@
             this.PanelBtns.Controls.Add(this.BtnSelect);
             this.PanelBtns.Controls.Add(this.BtnBurner);
             this.PanelBtns.Dock = System.Windows.Forms.DockStyle.Right;
-            this.PanelBtns.Location = new System.Drawing.Point(718, 10);
+            this.PanelBtns.Location = new System.Drawing.Point(703, 10);
             this.PanelBtns.Name = "PanelBtns";
             this.PanelBtns.Padding = new System.Windows.Forms.Padding(0, 24, 0, 24);
-            this.PanelBtns.Size = new System.Drawing.Size(250, 124);
-            this.PanelBtns.TabIndex = 9;
+            this.PanelBtns.Size = new System.Drawing.Size(265, 124);
+            this.PanelBtns.TabIndex = 11;
             // 
             // BtnSelect
             // 
@@ -251,7 +296,7 @@
             this.BtnSelect.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.BtnSelect.Name = "BtnSelect";
             this.BtnSelect.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.BtnSelect.Size = new System.Drawing.Size(250, 35);
+            this.BtnSelect.Size = new System.Drawing.Size(265, 35);
             this.BtnSelect.TabIndex = 0;
             this.BtnSelect.Text = " ÖĞE SEÇ";
             this.BtnSelect.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -279,7 +324,7 @@
             this.BtnBurner.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
             this.BtnBurner.Name = "BtnBurner";
             this.BtnBurner.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.BtnBurner.Size = new System.Drawing.Size(250, 35);
+            this.BtnBurner.Size = new System.Drawing.Size(265, 35);
             this.BtnBurner.TabIndex = 1;
             this.BtnBurner.Text = " ŞİFRELE";
             this.BtnBurner.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -301,11 +346,11 @@
             this.BtnSavePath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BtnSavePath.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold);
             this.BtnSavePath.ForeColor = System.Drawing.Color.White;
-            this.BtnSavePath.Location = new System.Drawing.Point(314, 105);
+            this.BtnSavePath.Location = new System.Drawing.Point(319, 105);
             this.BtnSavePath.Margin = new System.Windows.Forms.Padding(3, 3, 12, 3);
             this.BtnSavePath.Name = "BtnSavePath";
             this.BtnSavePath.Size = new System.Drawing.Size(27, 27);
-            this.BtnSavePath.TabIndex = 5;
+            this.BtnSavePath.TabIndex = 7;
             this.BtnSavePath.TextColor = System.Drawing.Color.White;
             this.BtnSavePath.UseVisualStyleBackColor = false;
             this.BtnSavePath.Click += new System.EventHandler(this.BtnSavePath_Click);
@@ -322,8 +367,7 @@
             this.BtnShowPassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BtnShowPassword.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold);
             this.BtnShowPassword.ForeColor = System.Drawing.Color.White;
-            this.BtnShowPassword.Location = new System.Drawing.Point(314, 37);
-            this.BtnShowPassword.Margin = new System.Windows.Forms.Padding(3, 3, 12, 3);
+            this.BtnShowPassword.Location = new System.Drawing.Point(319, 37);
             this.BtnShowPassword.Name = "BtnShowPassword";
             this.BtnShowPassword.Size = new System.Drawing.Size(27, 27);
             this.BtnShowPassword.TabIndex = 2;
@@ -340,8 +384,8 @@
             this.TextBox_SaveFolder.ForeColor = System.Drawing.Color.Black;
             this.TextBox_SaveFolder.Location = new System.Drawing.Point(13, 106);
             this.TextBox_SaveFolder.Name = "TextBox_SaveFolder";
-            this.TextBox_SaveFolder.Size = new System.Drawing.Size(297, 25);
-            this.TextBox_SaveFolder.TabIndex = 4;
+            this.TextBox_SaveFolder.Size = new System.Drawing.Size(300, 25);
+            this.TextBox_SaveFolder.TabIndex = 6;
             // 
             // TextBox_Password
             // 
@@ -353,7 +397,7 @@
             this.TextBox_Password.Location = new System.Drawing.Point(13, 38);
             this.TextBox_Password.Margin = new System.Windows.Forms.Padding(3, 3, 3, 15);
             this.TextBox_Password.Name = "TextBox_Password";
-            this.TextBox_Password.Size = new System.Drawing.Size(297, 25);
+            this.TextBox_Password.Size = new System.Drawing.Size(300, 25);
             this.TextBox_Password.TabIndex = 1;
             this.TextBox_Password.UseSystemPasswordChar = true;
             // 
@@ -428,7 +472,7 @@
             // 
             this.HeaderMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsToolStripMenuItem,
-            this.tSWizardToolStripMenuItem,
+            this.passwordGeneratorToolStripMenuItem,
             this.donateToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.HeaderMenu.Location = new System.Drawing.Point(0, 0);
@@ -653,14 +697,13 @@
             this.checkForUpdateToolStripMenuItem.Text = "Check for Updates";
             this.checkForUpdateToolStripMenuItem.Click += new System.EventHandler(this.CheckForUpdateToolStripMenuItem_Click);
             // 
-            // tSWizardToolStripMenuItem
+            // passwordGeneratorToolStripMenuItem
             // 
-            this.tSWizardToolStripMenuItem.Name = "tSWizardToolStripMenuItem";
-            this.tSWizardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-            this.tSWizardToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
-            this.tSWizardToolStripMenuItem.Text = "TSWizard";
-            this.tSWizardToolStripMenuItem.Click += new System.EventHandler(this.TSWizardToolStripMenuItem_Click);
+            this.passwordGeneratorToolStripMenuItem.Name = "passwordGeneratorToolStripMenuItem";
+            this.passwordGeneratorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.passwordGeneratorToolStripMenuItem.Size = new System.Drawing.Size(124, 20);
+            this.passwordGeneratorToolStripMenuItem.Text = "Password Generator";
+            this.passwordGeneratorToolStripMenuItem.Click += new System.EventHandler(this.PasswordGeneratorToolStripMenuItem_Click);
             // 
             // donateToolStripMenuItem
             // 
@@ -740,7 +783,6 @@
         private System.Windows.Forms.ToolStripMenuItem turkishToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tSWizardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem donateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowedToolStripMenuItem;
@@ -767,6 +809,9 @@
         private System.Windows.Forms.ToolStripMenuItem russianToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem spanishToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dutchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem passwordGeneratorToolStripMenuItem;
+        private TSCustomButton BtnCopyPassword;
+        private TSCustomButton BtnRndPssGen;
     }
 }
 

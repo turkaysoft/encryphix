@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -11,6 +10,9 @@ using System.Drawing.Drawing2D;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Net.NetworkInformation;
+using System.Net.Http;
 
 namespace Encryphix{
     internal class TSModules{
@@ -22,14 +24,13 @@ namespace Encryphix{
         public class TS_LinkSystem{
             public const string
             // Main Control Links
-            github_link_lv      = "https://raw.githubusercontent.com/turkaysoftware/encryphix/main/Encryphix/SoftwareVersion.txt",
-            github_link_lr      = "https://github.com/turkaysoftware/encryphix/releases/latest",
+            github_link_lv      = "https://raw.githubusercontent.com/turkaysoft/encryphix/main/Encryphix/SoftwareVersion.txt",
+            github_link_lr      = "https://github.com/turkaysoft/encryphix/releases/latest",
             // Social Links
-            website_link        = "https://www.turkaysoftware.com",
-            github_link         = "https://github.com/turkaysoftware",
+            website_link        = "https://turkaysoft.com",
+            github_link         = "https://github.com/turkaysoft",
             // Other Links
-            ts_wizard           = "https://www.turkaysoftware.com/ts-wizard",
-            ts_donate           = "https://buymeacoffee.com/turkaysoftware";
+            ts_donate           = "https://buymeacoffee.com/turkaysoft";
         }
         // VERSIONS
         // ======================================================================================================
@@ -527,6 +528,8 @@ namespace Encryphix{
                 // UI COLOR
                 { "HeaderFEColor", Color.FromArgb(51, 51, 51) },
                 { "HeaderBGColor", Color.FromArgb(236, 242, 248) },
+                { "HeaderFEColor2", Color.FromArgb(51, 51, 51) },
+                { "HeaderBGColor2", Color.FromArgb(236, 242, 248) },
                 // ACCENT COLOR
                 { "AccentColor", Color.FromArgb(90, 111, 141) },
                 { "AccentColorHover", Color.FromArgb(100, 124, 156) },
@@ -536,6 +539,12 @@ namespace Encryphix{
                 { "UIBGColor", Color.White },
                 { "UIBGColor2", Color.FromArgb(236, 242, 248) },
                 { "UIBGColor3", Color.FromArgb(207, 207, 207) },
+                //
+                { "PageContainerUIBGColor", Color.White },
+                { "ContentLabelLeftColor", Color.FromArgb(51, 51, 51) },
+                { "DynamicThemeActiveBtnBGColor", Color.WhiteSmoke },
+                { "SelectBoxBGColor", Color.White },
+                { "TrackColor", Color.FromArgb(208, 214, 219) },
                 //
                 { "DataGridBGColor", Color.White },
                 { "DataGridFEColor", Color.FromArgb(51, 51, 51) },
@@ -567,6 +576,8 @@ namespace Encryphix{
                 // UI COLOR
                 { "HeaderFEColor", Color.WhiteSmoke },
                 { "HeaderBGColor", Color.FromArgb(27, 30, 34) },
+                { "HeaderFEColor2", Color.WhiteSmoke },
+                { "HeaderBGColor2", Color.FromArgb(27, 30, 34) },
                 // ACCENT COLOR
                 { "AccentColor", Color.FromArgb(125, 154, 197) },
                 { "AccentColorHover", Color.FromArgb(139, 170, 216) },
@@ -576,6 +587,12 @@ namespace Encryphix{
                 { "UIBGColor", Color.FromArgb(34, 38, 44) },
                 { "UIBGColor2", Color.FromArgb(27, 30, 34) },
                 { "UIBGColor3", Color.FromArgb(42, 47, 53) },
+                //
+                { "PageContainerUIBGColor", Color.FromArgb(34, 38, 44) },
+                { "ContentLabelLeftColor", Color.WhiteSmoke },
+                { "DynamicThemeActiveBtnBGColor", Color.FromArgb(27, 30, 34) },
+                { "SelectBoxBGColor", Color.FromArgb(34, 38, 44) },
+                { "TrackColor", Color.FromArgb(170, 170, 170) },
                 //
                 { "DataGridBGColor", Color.FromArgb(34, 38, 44) },
                 { "DataGridFEColor", Color.WhiteSmoke },
@@ -591,11 +608,11 @@ namespace Encryphix{
             // ====================================
             public static Color ColorMode(int theme, string key){
                 if (theme == 0){
-                    return DarkTheme.ContainsKey(key) ? DarkTheme[key] : Color.Transparent;
+                    return DarkTheme.ContainsKey(key) ? DarkTheme[key] : Color.Black;
                 }else if (theme == 1){
-                    return LightTheme.ContainsKey(key) ? LightTheme[key] : Color.Transparent;
+                    return LightTheme.ContainsKey(key) ? LightTheme[key] : Color.White;
                 }
-                return Color.Transparent;
+                return Color.White;
             }
         }
         // THEME MODE HELPER
@@ -658,65 +675,86 @@ namespace Encryphix{
         }
         // DPI SENSITIVE DYNAMIC IMAGE RENDERER
         // ======================================================================================================
+        private static readonly object _lock_icon = new object();
+        private static readonly Dictionary<string, Image> _cache_icon = new Dictionary<string, Image>();
         public static void TSImageRenderer(object baseTarget, Image sourceImage, int basePadding, ContentAlignment imageAlign = ContentAlignment.MiddleCenter){
-            if (sourceImage == null || baseTarget == null) return;
+            if (baseTarget == null || sourceImage == null) return;
             const int minImageSize = 16;
-            try{
-                int calculatedSize;
-                Image previousImage = null;
-                Image ResizeImage(Image targetImg, int targetSize){
-                    Bitmap resizedEngine = new Bitmap(targetSize, targetSize, PixelFormat.Format32bppArgb);
-                    using (Graphics renderGraphics = Graphics.FromImage(resizedEngine)){
-                        renderGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        renderGraphics.SmoothingMode = SmoothingMode.AntiAlias;
-                        renderGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        renderGraphics.CompositingQuality = CompositingQuality.HighQuality;
-                        renderGraphics.DrawImage(targetImg, 0, 0, targetSize, targetSize);
-                    }
-                    return resizedEngine;
+            Image ResizeImage(Image targetImg, int targetSize){
+                var bmp = new Bitmap(targetSize, targetSize, PixelFormat.Format32bppArgb);
+                using (var g = Graphics.FromImage(bmp)){
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.SmoothingMode = SmoothingMode.AntiAlias;
+                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    g.CompositingQuality = CompositingQuality.HighQuality;
+                    g.DrawImage(targetImg, 0, 0, targetSize, targetSize);
                 }
-                if (baseTarget is Control targetControl){
-                    float dpi = targetControl.DeviceDpi > 0 ? targetControl.DeviceDpi : 96f;
-                    float dpiScaleFactor = dpi / 96f;
-                    int paddingWithScale = (int)Math.Round(basePadding * dpiScaleFactor);
-                    //
-                    calculatedSize = targetControl.Height - paddingWithScale;
-                    if (calculatedSize <= 0) { calculatedSize = minImageSize; }
-                    Image resizedImage = ResizeImage(sourceImage, calculatedSize);
-                    if (targetControl is Button buttonMode){
-                        previousImage = buttonMode.Image;
-                        buttonMode.Image = resizedImage;
-                        buttonMode.ImageAlign = imageAlign;
-                    }else if (targetControl is PictureBox pictureBoxMode){
-                        previousImage = pictureBoxMode.Image;
-                        pictureBoxMode.Image = resizedImage;
-                        pictureBoxMode.SizeMode = PictureBoxSizeMode.Zoom;
+                return bmp;
+            }
+            Image newImage = null;
+            Image oldImage = null;
+            try{
+                int size;
+                float dpi;
+                if (baseTarget is Control ctrl){
+                    dpi = ctrl.DeviceDpi > 0 ? ctrl.DeviceDpi : 96f;
+                    int padding = (int)Math.Round(basePadding * (dpi / 96f));
+                    size = ctrl.Height - padding;
+                    if (size <= 0) size = minImageSize;
+                    string key = $"{sourceImage.GetHashCode()}_C_{size}_{dpi}";
+                    newImage = GetOrCreate(key, () => ResizeImage(sourceImage, size));
+                    if (ctrl is Button btn){
+                        oldImage = btn.Image;
+                        btn.Image = newImage;
+                        btn.ImageAlign = imageAlign;
+                    }else if (ctrl is PictureBox pb){
+                        oldImage = pb.Image;
+                        pb.Image = newImage;
+                        pb.SizeMode = PictureBoxSizeMode.Zoom;
                     }else{
-                        resizedImage.Dispose();
+                        newImage.Dispose();
+                        newImage = null;
                     }
-                }else if (baseTarget is ToolStripItem toolStripItemMode){
-                    calculatedSize = toolStripItemMode.Height - basePadding;
-                    if (calculatedSize <= 0) { calculatedSize = minImageSize; }
-                    Image resizedImage = ResizeImage(sourceImage, calculatedSize);
-                    previousImage = toolStripItemMode.Image;
-                    toolStripItemMode.Image = resizedImage;
+                }else if (baseTarget is ToolStripItem item){
+                    dpi = item.GetCurrentParent()?.DeviceDpi ?? 96f;
+                    int padding = (int)Math.Round(basePadding * (dpi / 96f));
+                    size = item.Height - padding;
+                    if (size <= 0) size = minImageSize;
+                    string key = $"{sourceImage.GetHashCode()}_T_{size}_{dpi}";
+                    newImage = GetOrCreate(key, () => ResizeImage(sourceImage, size));
+                    oldImage = item.Image;
+                    item.Image = newImage;
                 }else{
                     return;
                 }
-                if (previousImage != null && previousImage != sourceImage) { previousImage.Dispose(); }
-            }catch (Exception){ }
+                if (oldImage != null && !ReferenceEquals(oldImage, sourceImage)){
+                    oldImage.Dispose();
+                }
+            }catch{
+                newImage?.Dispose();
+            }
+        }
+        private static Image GetOrCreate(string key, Func<Image> factory){
+            lock (_lock_icon){
+                if (_cache_icon.TryGetValue(key, out Image cached))
+                    return cached;
+                var created = factory();
+                _cache_icon[key] = created;
+                return created;
+            }
         }
         // DYNAMIC SIZE COUNT ALGORITHM
         // ======================================================================================================
         public static string TS_FormatSize(double bytes){
             string[] suffixes = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
             int suffixIndex = 0;
-            double doubleBytes = bytes;
-            while (doubleBytes >= 1024 && suffixIndex < suffixes.Length - 1){
-                doubleBytes /= 1024;
+            double value = bytes;
+            while (value >= 1024 && suffixIndex < suffixes.Length - 1){
+                value /= 1024;
                 suffixIndex++;
             }
-            return $"{doubleBytes:0.##} {suffixes[suffixIndex]}";
+            value = Math.Round(value, 2, MidpointRounding.AwayFromZero);
+            return $"{value:0.##} {suffixes[suffixIndex]}";
         }
         public static double TS_FormatSizeNoType(double bytes){
             while (bytes >= 1024){
@@ -731,21 +769,30 @@ namespace Encryphix{
         }
         // INTERNET CONNECTION STATUS
         // ======================================================================================================
-          public static bool IsNetworkCheck(){
+        public static async Task<bool> IsNetworkAvailable(){
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                return false;
+            string[] urls ={
+                "https://www.gstatic.com/generate_204",
+                "https://www.cloudflare.com",
+                "https://www.google.com"
+            };
             try{
-                var check_net = (HttpWebRequest)WebRequest.Create("http://clients3.google.com/generate_204");
-                check_net.Method = "GET";
-                check_net.KeepAlive = false;
-                check_net.Proxy = null;
-                check_net.Timeout = 2500;
-                check_net.ReadWriteTimeout = 2500;
-                check_net.AllowAutoRedirect = false;
-                using (var resp_net = (HttpWebResponse)check_net.GetResponse()){
-                    return resp_net.StatusCode == HttpStatusCode.NoContent;
+                using (HttpClient client = new HttpClient()){
+                    client.Timeout = TimeSpan.FromSeconds(3);
+                    foreach (var url in urls){
+                        try{
+                            using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead)){
+                                if (response.IsSuccessStatusCode)
+                                    return true;
+                            }
+                        }catch{ }
+                    }
                 }
-            }catch (WebException){
+            }catch{
                 return false;
             }
+            return false;
         }
         // DPI AWARE V2
         // ======================================================================================================

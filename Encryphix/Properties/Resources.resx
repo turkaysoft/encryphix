@@ -118,6 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ct_copy_mc_dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\encryphix_images\encryphix_ui\theme_dark\ct_copy_mc_dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ct_copy_mc_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\encryphix_images\encryphix_ui\theme_light\ct_copy_mc_light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ct_decrypt_dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\encryphix_images\encryphix_ui\theme_dark\ct_decrypt_dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -135,6 +141,12 @@
   </data>
   <data name="ct_folder_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\encryphix_images\encryphix_ui\theme_light\ct_folder_light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ct_generate_dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\encryphix_images\encryphix_ui\theme_dark\ct_generate_dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ct_generate_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\encryphix_images\encryphix_ui\theme_light\ct_generate_light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ct_github_dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\encryphix_images\encryphix_ui\theme_dark\ct_github_dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -187,6 +199,12 @@
   <data name="tm_language_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\encryphix_images\encryphix_ui\theme_light\tm_language_light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="tm_password_generator_dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\encryphix_images\encryphix_ui\theme_dark\tm_password_generator_dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tm_password_generator_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\encryphix_images\encryphix_ui\theme_light\tm_password_generator_light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="tm_safety_warnings_dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\encryphix_images\encryphix_ui\theme_dark\tm_safety_warnings_dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -210,12 +228,6 @@
   </data>
   <data name="tm_theme_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\encryphix_images\encryphix_ui\theme_light\tm_theme_light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tm_ts_wizard_dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\encryphix_images\encryphix_ui\theme_dark\tm_ts_wizard_dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tm_ts_wizard_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\encryphix_images\encryphix_ui\theme_light\tm_ts_wizard_light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="tm_update_dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\encryphix_images\encryphix_ui\theme_dark\tm_update_dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
