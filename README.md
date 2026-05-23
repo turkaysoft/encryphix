@@ -30,7 +30,7 @@ You can support this project by making a donation to help ensure its sustainabil
 
 ## Interface Preview
 
-<img width="1010" height="633" alt="Encryphix UI" src="https://github.com/user-attachments/assets/3c30c019-3a2a-4658-813f-e089b6b612e0" />
+<img width="1010" height="633" alt="Encryphix UI" src="https://github.com/user-attachments/assets/313cdcf0-909c-4ef7-a64a-431700eee42b" />
 
 ## Password Generator
 
