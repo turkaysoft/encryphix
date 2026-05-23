@@ -32,6 +32,10 @@ You can support this project by making a donation to help ensure its sustainabil
 
 <img width="1010" height="633" alt="Encryphix UI" src="https://github.com/user-attachments/assets/3c30c019-3a2a-4658-813f-e089b6b612e0" />
 
+## Password Generator
+
+<img width="586" height="533" alt="Encryphix Password Manager" src="https://github.com/user-attachments/assets/8738b7a6-68b1-43f8-9779-cc63ee0a5212" />
+
 ---
 
 ## Advanced Capabilities
