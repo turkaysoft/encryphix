@@ -70,7 +70,7 @@ Encryphix combines security with practical utility to offer a superior encryptio
 1.  Navigate to the **[Releases](https://github.com/turkaysoft/encryphix/releases/latest)** page.
 2.  Download the latest ZIP file.
 3.  **Extract all files from the ZIP** (Important: Application requires all folder contents to run correctly).
-4.  Launch the executable:
+4.  Launch the executable corresponding to your architecture:
     * `Encryphix_x64.exe`: For standard 64-bit Intel/AMD systems.
     * `Encryphix_arm64.exe`: For ARM-based devices like Surface Pro.
 
