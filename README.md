@@ -19,9 +19,15 @@ You can support this project by making a donation to help ensure its sustainabil
 ## Key Features
 
 * **Military-Grade Security:** Utilizes **AES-256** and **PBKDF2** for robust data encryption.
+* **HMAC-SHA256 Integrity Verification:** Encrypted files include an integrity verification system. Any unauthorized modification to the file content is instantly detected and reported as "CorruptedFileOrTampered", protecting your data from undetected tampering.
+* **Secure File Deletion:** Before permanent deletion, files are overwritten with cryptographically random data using multiple passes, making forensic recovery impossible and ensuring deleted data cannot be reconstructed.
+* **Path Traversal Protection:** A file name sanitization mechanism actively blocks path traversal attacks, preventing malicious actors from accessing files outside the intended directory structure.
+* **Cryptographically Secure Password Generator:** Uses `RandomNumberGenerator`, implements Rejection Sampling to eliminate modulo bias, and applies Fisher-Yates Shuffle for secure character randomization. Each generated password guarantees at least one uppercase letter, one lowercase letter, one digit, and one symbol, with a random length between 10-18 characters.
+* **Auto-Clipboard Clear:** Copied passwords are automatically removed from the clipboard after 30 seconds. If no new data is copied within this period, the clipboard is cleared — preventing accidental password leaks through paste operations.
+* **Separate Key Derivation:** The key derivation system generates independent 32-byte AES encryption keys and 32-byte HMAC integrity keys, providing stronger cryptographic separation between encryption and verification operations.
 * **Pure Performance:** Developed exclusively in **C# and .NET Framework** with no external libraries or dependencies.
 * **Modern UI:** Sophisticated interface with Light, Dark, and System theme support.
-* **Multilingual:** Fully supports 15+ languages including English, Turkish, German, and more.
+* **Multilingual:** It supports 15 different languages, primarily English. You can access the supported languages here: [Supported Languages](https://github.com/turkaysoft/encryphix/discussions/1)
 * **Portable:** No installation required. Carry your encryption tool anywhere and run it instantly.
 * **Completely Free:** High-end encryption features provided at no cost to the user.
 * **Built-in Update Mechanism:** It features a built-in smart update mechanism developed specifically by **Türkaysoft**.
