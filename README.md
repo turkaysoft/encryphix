@@ -22,6 +22,8 @@ You can support this project by making a donation to help ensure its sustainabil
 * **Pure Performance:** Developed exclusively in **C# and .NET Framework** with no external libraries or dependencies.
 * **Military-Grade Security:** Utilizes **AES-256** and **PBKDF2** for robust data encryption.
 * **HMAC-SHA256 Integrity Verification:** Encrypted files include an integrity verification system. Any unauthorized modification to the file content is instantly detected and reported as "CorruptedFileOrTampered", protecting your data from undetected tampering.
+* **Secure Compression:** Optionally compress your data while encrypting it to save storage space.
+* **Folder & File Support:** Encrypt individual files or entire directory structures with equal ease.
 * **Secure File Deletion:** Before permanent deletion, files are overwritten with cryptographically random data using multiple passes, making forensic recovery impossible and ensuring deleted data cannot be reconstructed.
 * **Path Traversal Protection:** A file name sanitization mechanism actively blocks path traversal attacks, preventing malicious actors from accessing files outside the intended directory structure.
 * **Cryptographically Secure Password Generator:** Uses `RandomNumberGenerator`, implements Rejection Sampling to eliminate modulo bias, and applies Fisher-Yates Shuffle for secure character randomization. Each generated password guarantees at least one uppercase letter, one lowercase letter, one digit, and one symbol, with a random length between 10-18 characters.
@@ -40,16 +42,6 @@ You can support this project by making a donation to help ensure its sustainabil
 ## Password Generator
 
 <img width="586" height="533" alt="Encryphix Password Manager" src="https://github.com/user-attachments/assets/8738b7a6-68b1-43f8-9779-cc63ee0a5212" />
-
----
-
-## Advanced Capabilities
-
-Encryphix combines security with practical utility to offer a superior encryption experience:
-
-* **Secure Compression:** Optionally compress your data while encrypting it to save storage space.
-* **Folder & File Support:** Encrypt individual files or entire directory structures with equal ease.
-* **Multi-Architecture Support:** Fully compatible with both x64-x86 and ARM processor architectures.
 
 ---
 
