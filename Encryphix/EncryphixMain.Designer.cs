@@ -34,9 +34,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.PanelBack = new System.Windows.Forms.Panel();
-            this.Progress_BG = new System.Windows.Forms.Panel();
-            this.Progress_FE = new System.Windows.Forms.Panel();
-            this.PanelControl = new System.Windows.Forms.Panel();
+            this.Progress_BG = new Encryphix.TSCustomPanel();
+            this.Progress_FE = new Encryphix.TSCustomPanel();
+            this.PanelControl = new Encryphix.TSCustomPanel();
             this.BtnRndPssGen = new Encryphix.TSCustomButton();
             this.BtnCopyPassword = new Encryphix.TSCustomButton();
             this.Label_SaveFolder = new System.Windows.Forms.Label();
@@ -110,25 +110,34 @@
             this.Progress_BG.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Progress_BG.BackColor = System.Drawing.Color.White;
+            this.Progress_BG.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.Progress_BG.BorderRadius = 3;
+            this.Progress_BG.BorderSize = 0;
             this.Progress_BG.Controls.Add(this.Progress_FE);
-            this.Progress_BG.Location = new System.Drawing.Point(15, 400);
+            this.Progress_BG.Location = new System.Drawing.Point(15, 399);
             this.Progress_BG.Name = "Progress_BG";
-            this.Progress_BG.Size = new System.Drawing.Size(978, 5);
+            this.Progress_BG.Size = new System.Drawing.Size(978, 6);
             this.Progress_BG.TabIndex = 1;
             this.Progress_BG.Visible = false;
             // 
             // Progress_FE
             // 
             this.Progress_FE.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(111)))), ((int)(((byte)(141)))));
+            this.Progress_FE.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.Progress_FE.BorderRadius = 3;
+            this.Progress_FE.BorderSize = 0;
             this.Progress_FE.Dock = System.Windows.Forms.DockStyle.Left;
             this.Progress_FE.Location = new System.Drawing.Point(0, 0);
             this.Progress_FE.Name = "Progress_FE";
-            this.Progress_FE.Size = new System.Drawing.Size(99, 5);
+            this.Progress_FE.Size = new System.Drawing.Size(99, 6);
             this.Progress_FE.TabIndex = 0;
             // 
             // PanelControl
             // 
             this.PanelControl.BackColor = System.Drawing.Color.White;
+            this.PanelControl.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.PanelControl.BorderRadius = 5;
+            this.PanelControl.BorderSize = 0;
             this.PanelControl.Controls.Add(this.BtnRndPssGen);
             this.PanelControl.Controls.Add(this.BtnCopyPassword);
             this.PanelControl.Controls.Add(this.Label_SaveFolder);
@@ -464,7 +473,7 @@
             this.FAF_DGV.RowHeadersVisible = false;
             this.FAF_DGV.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.FAF_DGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.FAF_DGV.Size = new System.Drawing.Size(978, 372);
+            this.FAF_DGV.Size = new System.Drawing.Size(978, 371);
             this.FAF_DGV.TabIndex = 0;
             this.FAF_DGV.SelectionChanged += new System.EventHandler(this.FAF_DGV_SelectionChanged);
             // 
@@ -761,12 +770,12 @@
 
         #endregion
         private System.Windows.Forms.Panel PanelBack;
-        private System.Windows.Forms.Panel PanelControl;
+        private TSCustomPanel PanelControl;
         private TSCustomButton BtnBurner;
         private System.Windows.Forms.Label Label_Password;
         private System.Windows.Forms.TextBox TextBox_Password;
-        private System.Windows.Forms.Panel Progress_BG;
-        private System.Windows.Forms.Panel Progress_FE;
+        private TSCustomPanel Progress_BG;
+        private TSCustomPanel Progress_FE;
         private TSCustomButton BtnSelect;
         private System.Windows.Forms.TextBox TextBox_SaveFolder;
         private System.Windows.Forms.Label Label_SaveFolder;
