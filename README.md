@@ -73,6 +73,24 @@ You can support this project by making a donation to help ensure its sustainabil
 
 ---
 
+## Shortcut Keys
+
+| Shortcut | Action |
+|--|--|
+| `F1` | Light Theme |
+| `F2` | Dark Theme |
+| `F3` | System Theme |
+| `F4` | Starting With: Windowed |
+| `F5` | Starting With: Full Screen |
+| `F6` | Safety Warnings: On |
+| `F7` | Safety Warnings: Off |
+| `F11` | Check Updates |
+| `F12` | About |
+| `CTRL + P` | Password Generator |
+| `CTRL + Alt + D` | Donate Page |
+
+---
+
 ## Security
 
 * **Zero Data Export Policy:** Your privacy is our priority; no data leaves your machine.
