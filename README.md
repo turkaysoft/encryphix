@@ -37,11 +37,11 @@ You can support this project by making a donation to help ensure its sustainabil
 
 ## Interface Preview
 
-<img width="1010" height="633" alt="Encryphix UI" src="https://github.com/user-attachments/assets/be576b66-147a-4a91-874b-328524475d9a" />
+<img width="1010" height="633" alt="Encryphix UI" src="https://github.com/user-attachments/assets/f3112504-3837-4d6b-a7e9-01ca0f2c0cfe" />
 
 ## Password Generator
 
-<img width="586" height="533" alt="Encryphix Password Generator" src="https://github.com/user-attachments/assets/2bfb9d1c-0cff-48bf-b41d-78573c9d49fd" />
+<img width="586" height="523" alt="Encryphix Password Generator" src="https://github.com/user-attachments/assets/31b45208-a557-4ac9-a33b-ba71ad934e71" />
 
 ---
 
