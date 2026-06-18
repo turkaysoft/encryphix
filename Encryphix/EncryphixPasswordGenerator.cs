@@ -20,7 +20,7 @@ namespace Encryphix{
                 modes = new Dictionary<string, (string, string, string, string)> {
                     { "readable", ("ABCDEFGHJKLMNPQRSTUVWXYZ", "abcdefghjkmnpqrstuvwxyz", "23456789", "") },
                     { "writable", ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789", "-_") },
-                    { "random", ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789", "!@#$%^&*()-_=+[]{}|;:,.<>?") }
+                    { "random", ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789", "!@#$%^&*()-_=+?") }
                 };
             }
             public string EncryphixGeneratePassword(bool includeUppercase, bool includeLowercase, bool includeNumeric, bool includeSpecialChars, string mode, int passwordLength){
@@ -233,7 +233,7 @@ namespace Encryphix{
         // LAUNCHER
         // ======================================================================================================
         private void BtnGenPass_Click(object sender, EventArgs e) => Encryphix_pass_gen_engine();
-        // COPY PASSWORD (with security warning)
+        // COPY PASSWORD
         // ======================================================================================================
         private void PassResultLabel_DoubleClick(object sender, EventArgs e){
             if (!string.IsNullOrWhiteSpace(PassResultLabel.Text)){
@@ -244,8 +244,7 @@ namespace Encryphix{
                         if (Clipboard.GetText() == copiedPassword){
                             Clipboard.Clear();
                         }
-                    }
-                    catch { }
+                    }catch { }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
                 TSGetLangs lang = new TSGetLangs(EncryphixMain.lang_path);
                 TS_MessageBoxEngine.TS_MessageBox(this, 1, lang.TSReadLangs("EncryphixPasswordGenerator", "epg_copy_password"));
