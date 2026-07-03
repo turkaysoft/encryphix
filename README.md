@@ -20,6 +20,7 @@ You can support this project by making a donation to help ensure its sustainabil
 
 * **Privacy First:** Your data stays on your machine; no information is transferred to external servers.
 * **Pure Performance:** Developed exclusively in **C# and .NET Framework** with no external libraries or dependencies.
+* **Portable:** No installation required. Just download it, extract all files from the ZIP, select the appropriate architecture, and run it.
 * **Military-Grade Security:** Utilizes **AES-256** and **PBKDF2** for robust data encryption.
 * **HMAC-SHA256 Integrity Verification:** Encrypted files include an integrity verification system. Any unauthorized modification to the file content is instantly detected and reported as "CorruptedFileOrTampered", protecting your data from undetected tampering.
 * **Secure Compression:** Optionally compress your data while encrypting it to save storage space.
