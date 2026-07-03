@@ -234,6 +234,7 @@ namespace Encryphix{
         private void Encryphix_Load(object sender, EventArgs e){
             Text = TS_VersionEngine.TS_SoftwareVersion(0);
             HeaderMenu.Cursor = Cursors.Hand;
+            // LOAD MODULE
             RunSoftwareEngine();
             //
             Task softwareUpdateCheck = Task.Run(() => Software_update_check(0));
@@ -678,78 +679,78 @@ namespace Encryphix{
                     TSImageRenderer(BtnBurner, p_mode ? Properties.Resources.ct_decrypt_dark : Properties.Resources.ct_encrypt_dark, 19, ContentAlignment.MiddleLeft);
                 }
                 // HEADER
-                header_colors[0] = TS_ThemeEngine.ColorMode(theme, "HeaderBGColorMain");
-                header_colors[1] = TS_ThemeEngine.ColorMode(theme, "HeaderFEColorMain");
-                header_colors[2] = TS_ThemeEngine.ColorMode(theme, "AccentColor");
+                header_colors[0] = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor2");
+                header_colors[1] = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                header_colors[2] = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
                 HeaderMenu.Renderer = new HeaderMenuColors();
                 // TOOLTIP
-                MainToolTip.ForeColor = TS_ThemeEngine.ColorMode(theme, "HeaderFEColor");
-                MainToolTip.BackColor = TS_ThemeEngine.ColorMode(theme, "HeaderBGColor");
+                MainToolTip.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                MainToolTip.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
                 // HEADER MENU
-                var bg = TS_ThemeEngine.ColorMode(theme, "HeaderBGColor");
-                var fg = TS_ThemeEngine.ColorMode(theme, "HeaderFEColor");
+                var bg = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
+                var fg = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
                 HeaderMenu.ForeColor = fg;
                 HeaderMenu.BackColor = bg;
                 SetMenuStripColors(HeaderMenu, bg, fg);
                 // UI
-                BackColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor2");
+                BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
                 //
-                FAF_DGV.BackgroundColor = TS_ThemeEngine.ColorMode(theme, "DataGridBGColor");
+                FAF_DGV.BackgroundColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor2");
                 FAF_DGV.GridColor = TS_ThemeEngine.ColorMode(theme, "DataGridColor");
-                FAF_DGV.DefaultCellStyle.BackColor = TS_ThemeEngine.ColorMode(theme, "DataGridBGColor");
-                FAF_DGV.DefaultCellStyle.ForeColor = TS_ThemeEngine.ColorMode(theme, "DataGridFEColor");
-                FAF_DGV.AlternatingRowsDefaultCellStyle.BackColor = TS_ThemeEngine.ColorMode(theme, "DataGridAlternatingColor");
-                FAF_DGV.ColumnHeadersDefaultCellStyle.BackColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
-                FAF_DGV.ColumnHeadersDefaultCellStyle.SelectionBackColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
-                FAF_DGV.ColumnHeadersDefaultCellStyle.ForeColor = TS_ThemeEngine.ColorMode(theme, "DataGridSelectionColor");
-                FAF_DGV.DefaultCellStyle.SelectionBackColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
-                FAF_DGV.DefaultCellStyle.SelectionForeColor = TS_ThemeEngine.ColorMode(theme, "DataGridSelectionColor");
+                FAF_DGV.DefaultCellStyle.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor2");
+                FAF_DGV.DefaultCellStyle.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                FAF_DGV.AlternatingRowsDefaultCellStyle.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
+                FAF_DGV.ColumnHeadersDefaultCellStyle.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
+                FAF_DGV.ColumnHeadersDefaultCellStyle.SelectionBackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
+                FAF_DGV.ColumnHeadersDefaultCellStyle.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
+                FAF_DGV.DefaultCellStyle.SelectionBackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
+                FAF_DGV.DefaultCellStyle.SelectionForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
                 //
-                Progress_BG.BackColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor");
-                Progress_FE.BackColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
+                Progress_BG.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor2");
+                Progress_FE.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
                 //
-                PanelControl.BackColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor");
+                PanelControl.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor2");
                 //
-                Label_Password.ForeColor = TS_ThemeEngine.ColorMode(theme, "AccentColorText");
-                TextBox_Password.BackColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor2");
-                TextBox_Password.ForeColor = TS_ThemeEngine.ColorMode(theme, "TextBoxFEColor");
-                Label_SaveFolder.ForeColor = TS_ThemeEngine.ColorMode(theme, "AccentColorText");
+                Label_Password.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                TextBox_Password.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
+                TextBox_Password.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                Label_SaveFolder.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
                 //
-                CheckOrjFileDelete.ForeColor = TS_ThemeEngine.ColorMode(theme, "AccentColorText");
-                CheckOrjFileDelete.CheckedColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
-                CheckOrjFileDelete.CheckMarkColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor2");
+                CheckOrjFileDelete.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                CheckOrjFileDelete.CheckedColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
+                CheckOrjFileDelete.CheckMarkColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
                 CheckOrjFileDelete.UncheckedBorderColor = TS_ThemeEngine.ColorMode(theme, "CheckBoxUnCheckBorderColor");
                 //
-                TextBox_SaveFolder.BackColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor2");
-                TextBox_SaveFolder.ForeColor = TS_ThemeEngine.ColorMode(theme, "TextBoxFEColor");
-                Label_Compress.ForeColor = TS_ThemeEngine.ColorMode(theme, "AccentColorText");
+                TextBox_SaveFolder.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
+                TextBox_SaveFolder.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                Label_Compress.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
                 //
                 var combinedBtnsControls = PanelBtns.Controls.Cast<Control>().Concat(PanelControl.Controls.Cast<Control>());
                 foreach (Control control in combinedBtnsControls){
                     if (control is Button button){
-                        button.ForeColor = TS_ThemeEngine.ColorMode(theme, "DynamicThemeActiveBtnBG");
-                        button.BackColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
-                        button.FlatAppearance.BorderColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
-                        button.FlatAppearance.MouseDownBackColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
+                        button.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor2");
+                        button.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
+                        button.FlatAppearance.BorderColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
+                        button.FlatAppearance.MouseDownBackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
                         button.FlatAppearance.MouseOverBackColor = TS_ThemeEngine.ColorMode(theme, "AccentColorHover");
                     }
                 }
                 //
-                Combo_Compress.BackColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor2");
-                Combo_Compress.ForeColor = TS_ThemeEngine.ColorMode(theme, "TextBoxFEColor");
-                Combo_Compress.HoverBackColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor2");
-                Combo_Compress.ButtonColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
+                Combo_Compress.BackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
+                Combo_Compress.ForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                Combo_Compress.HoverBackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
+                Combo_Compress.ButtonColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
                 Combo_Compress.HoverButtonColor = TS_ThemeEngine.ColorMode(theme, "AccentColorHover");
-                Combo_Compress.ArrowColor = TS_ThemeEngine.ColorMode(theme, "DynamicThemeActiveBtnBG");
+                Combo_Compress.ArrowColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor2");
                 Combo_Compress.BorderColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor3");
                 Combo_Compress.FocusedBorderColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor3");
-                Combo_Compress.DisabledBackColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor2");
-                Combo_Compress.DisabledForeColor = TS_ThemeEngine.ColorMode(theme, "TextBoxFEColor");
-                Combo_Compress.DisabledButtonColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
-                Combo_Compress.DisabledArrowColor = TS_ThemeEngine.ColorMode(theme, "DynamicThemeActiveBtnBG");
-                Combo_Compress.HoverForeColor = TS_ThemeEngine.ColorMode(theme, "TextBoxFEColor");
-                Combo_Compress.SelectedBackColor = TS_ThemeEngine.ColorMode(theme, "AccentColor");
-                Combo_Compress.SelectedForeColor = TS_ThemeEngine.ColorMode(theme, "UIBGColor2");
+                Combo_Compress.DisabledBackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
+                Combo_Compress.DisabledForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                Combo_Compress.DisabledButtonColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
+                Combo_Compress.DisabledArrowColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor2");
+                Combo_Compress.HoverForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_LabelColor1");
+                Combo_Compress.SelectedBackColor = TS_ThemeEngine.ColorMode(theme, "TSBT_AccentColor");
+                Combo_Compress.SelectedForeColor = TS_ThemeEngine.ColorMode(theme, "TSBT_BGColor");
                 //
                 Software_other_page_preloader();
             }catch (Exception){ }
@@ -799,7 +800,7 @@ namespace Encryphix{
                 software_about.Name = software_about_name;
                 if (Application.OpenForms[software_about_name] != null){
                     software_about = (EncryphixAbout)Application.OpenForms[software_about_name];
-                    software_about.About_preloader();
+                    software_about.About_Preloader();
                 }
             }catch (Exception){ }
         }

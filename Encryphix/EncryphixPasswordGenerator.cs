@@ -111,60 +111,60 @@ namespace Encryphix{
             try{
                 TSThemeModeHelper.InitializeThemeForForm(this);
                 //
-                MainToolTip.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "HeaderFEColor2");
-                MainToolTip.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "HeaderBGColor2");
+                MainToolTip.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_LabelColor1");
+                MainToolTip.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor");
                 //
-                BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "PageContainerUIBGColor");
-                Panel_BG.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "HeaderBGColor2");
+                BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor2");
+                Panel_BG.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor");
                 //
-                SetControlColors<Label>(Panel_BG, lbl => lbl.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "ContentLabelLeftColor"));
+                SetControlColors<Label>(Panel_BG, lbl => lbl.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_LabelColor1"));
                 SetControlColors<TextBox>(Panel_BG, tb => {
                     tb.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TextboxBGColor");
                     tb.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TextboxFEColor");
                 });
                 SetControlColors<Button>(Panel_BG, btn => {
                     btn.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "DynamicThemeActiveBtnBGColor");
-                    var color = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
+                    var color = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
                     btn.BackColor = color;
                     btn.FlatAppearance.BorderColor = color;
                     btn.FlatAppearance.MouseDownBackColor = color;
                     btn.FlatAppearance.MouseOverBackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColorHover");
                 });
                 //
-                LabelHeader.BackColor = Panel_Feature.BackColor = Panel_Mode.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "PageContainerUIBGColor");
-                LabelHeader.ForeColor = LabelFeature.ForeColor = LabelMode.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "ContentLabelLeftColor");
-                LabelFeature.BackColor = LabelMode.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "HeaderBGColor2");
+                LabelHeader.BackColor = Panel_Feature.BackColor = Panel_Mode.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor2");
+                LabelHeader.ForeColor = LabelFeature.ForeColor = LabelMode.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_LabelColor1");
+                LabelFeature.BackColor = LabelMode.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor");
                 //
-                SetControlColors<CheckBox>(Panel_Feature, cb => cb.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "ContentLabelLeftColor"));
-                SetControlColors<RadioButton>(Panel_Mode, rb => rb.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "ContentLabelLeftColor"));
+                SetControlColors<CheckBox>(Panel_Feature, cb => cb.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_LabelColor1"));
+                SetControlColors<RadioButton>(Panel_Mode, rb => rb.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_LabelColor1"));
                 //
-                CheckUppercase.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
-                CheckUppercase.CheckMarkColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "SelectBoxBGColor");
+                CheckUppercase.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
+                CheckUppercase.CheckMarkColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor2");
                 CheckUppercase.UncheckedBorderColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "CheckBoxUnCheckBorderColor");
-                CheckLowercase.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
-                CheckLowercase.CheckMarkColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "SelectBoxBGColor");
+                CheckLowercase.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
+                CheckLowercase.CheckMarkColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor2");
                 CheckLowercase.UncheckedBorderColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "CheckBoxUnCheckBorderColor");
-                CheckNumeric.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
-                CheckNumeric.CheckMarkColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "SelectBoxBGColor");
+                CheckNumeric.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
+                CheckNumeric.CheckMarkColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor2");
                 CheckNumeric.UncheckedBorderColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "CheckBoxUnCheckBorderColor");
-                CheckSpecialChars.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
-                CheckSpecialChars.CheckMarkColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "SelectBoxBGColor");
+                CheckSpecialChars.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
+                CheckSpecialChars.CheckMarkColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor2");
                 CheckSpecialChars.UncheckedBorderColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "CheckBoxUnCheckBorderColor");
                 //
                 RadioRead.UnCheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "CheckBoxUnCheckBorderColor");
-                RadioRead.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
+                RadioRead.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
                 RadioWrite.UnCheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "CheckBoxUnCheckBorderColor");
-                RadioWrite.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
+                RadioWrite.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
                 RadioMixed.UnCheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "CheckBoxUnCheckBorderColor");
-                RadioMixed.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
+                RadioMixed.CheckedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
                 //
-                PassLenghtLabel.BackColor = PassGenLenght.BackColor = PassResultLabel.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "PageContainerUIBGColor");
-                PassLenghtLabel.ForeColor = PassGenLenght.ForeColor = PassResultLabel.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "ContentLabelLeftColor");
+                PassLenghtLabel.BackColor = PassGenLenght.BackColor = PassResultLabel.BackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_BGColor2");
+                PassLenghtLabel.ForeColor = PassGenLenght.ForeColor = PassResultLabel.ForeColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_LabelColor1");
                 PassGenLenght.TrackColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TrackColor");
-                PassGenLenght.ThumbColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
+                PassGenLenght.ThumbColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
                 PassGenLenght.ThumbHoverColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColorHover");
                 PassGenLenght.ThumbPressedColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColorHover");
-                PassGenLenght.TrackFillColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "AccentColor");
+                PassGenLenght.TrackFillColor = TS_ThemeEngine.ColorMode(EncryphixMain.theme, "TSBT_AccentColor");
                 //
                 TSImageRenderer(BtnGenPass, EncryphixMain.theme == 1 ? Properties.Resources.ct_generate_light : Properties.Resources.ct_generate_dark, 18, ContentAlignment.MiddleRight);
                 //
