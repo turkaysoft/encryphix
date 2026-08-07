@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.Net.Http;
+using System.Diagnostics;
 
 namespace Encryphix{
     internal class TSModules{
@@ -453,8 +454,19 @@ namespace Encryphix{
         };
         public static string TSPreloaderSetDefaultLanguage(string ui_lang){
             bool anyLanguageFileExists = AllLanguageFiles.Values.Any(File.Exists);
-            bool isUiLangValid = !string.IsNullOrEmpty(ui_lang) && AllLanguageFiles.ContainsKey(ui_lang) && File.Exists(AllLanguageFiles[ui_lang]);
-            return anyLanguageFileExists && isUiLangValid ? ui_lang : "en";
+            if (!anyLanguageFileExists) return "en";
+            if (!string.IsNullOrEmpty(ui_lang)){
+                if (AllLanguageFiles.ContainsKey(ui_lang) && File.Exists(AllLanguageFiles[ui_lang])){
+                    return ui_lang;
+                }
+                if (ui_lang.Length >= 2){
+                    string twoLetter = ui_lang.Substring(0, 2);
+                    if (AllLanguageFiles.ContainsKey(twoLetter) && File.Exists(AllLanguageFiles[twoLetter])){
+                        return twoLetter;
+                    }
+                }
+            }
+            return "en";
         }
         public static List<string> AvailableLanguages = AllLanguageFiles.Values.Where(filePath => File.Exists(filePath)).ToList();
         // READ LANG CLASS
@@ -525,55 +537,70 @@ namespace Encryphix{
         public class TS_ThemeEngine{
             // LIGHT THEME COLORS
             // ====================================
-            public static readonly Dictionary<string, Color> LightTheme = new Dictionary<string, Color>{
+            public static readonly Dictionary<string, string> LightTheme = new Dictionary<string, string>{
                 // BG & PANELS
-                { "TSBT_BGColor", Color.FromArgb(236, 242, 248) },
-                { "TSBT_BGColor2", Color.White },
+                { "TSBT_BGColor", "#ECF2F8" },
+                { "TSBT_BGColor2", "#FFFFFF" },
                 // ACCENT COLORS
-                { "TSBT_AccentColor", Color.FromArgb(90, 111, 141) },
-                { "AccentColorHover", Color.FromArgb(100, 124, 156) },
+                { "TSBT_AccentColor", "#5A6F8D" },
+                { "AccentColorHover", "#647C9C" },
                 // FOREGROUND / TEXT
-                { "TSBT_LabelColor1", Color.FromArgb(51, 51, 51) },
-                { "TSBT_LabelColor2", Color.FromArgb(100, 100, 100) },
-                { "DynamicThemeActiveBtnBGColor", Color.WhiteSmoke },
+                { "TSBT_LabelColor1", "#16191d" },
+                { "TSBT_LabelColor2", "#646464" },
+                { "DynamicThemeActiveBtnBGColor", "#F5F5F5" },
                 // BORDERS, GRIDS & SEPARATORS
-                { "UIBGColor3", Color.FromArgb(207, 207, 207) },
-                { "DataGridColor", Color.FromArgb(226, 226, 226) },
-                { "CheckBoxUnCheckBorderColor", Color.FromArgb(98, 98, 98) },
-                { "TrackColor", Color.FromArgb(208, 214, 219) },
+                { "DataGridColor", "#d1d7df" },
+                { "CheckBoxUnCheckBorderColor", "#394149" },
+                { "TrackColor", "#D0D6DB" },
                 // TRANSPARENCIES / ALPHAS
-                { "TSBT_CloseBG", Color.FromArgb(25, 255, 255, 255) },
-                { "TSBT_CloseBGHover", Color.FromArgb(50, 255, 255, 255) }
+                { "TSBT_CloseBG", "#19FFFFFF" },
+                { "TSBT_CloseBGHover", "#32FFFFFF" }
             };
             // DARK THEME COLORS
             // ====================================
-            public static readonly Dictionary<string, Color> DarkTheme = new Dictionary<string, Color>{
+            public static readonly Dictionary<string, string> DarkTheme = new Dictionary<string, string>{
                 // BG & PANELS
-                { "TSBT_BGColor", Color.FromArgb(27, 30, 34) },
-                { "TSBT_BGColor2", Color.FromArgb(34, 38, 44) },
+                { "TSBT_BGColor", "#0d0f12" },
+                { "TSBT_BGColor2", "#16191d" },
                 // ACCENT COLORS
-                { "TSBT_AccentColor", Color.FromArgb(125, 154, 197) },
-                { "AccentColorHover", Color.FromArgb(139, 170, 216) },
+                { "TSBT_AccentColor", "#7D9AC5" },
+                { "AccentColorHover", "#8BAAD8" },
                 // FOREGROUND / TEXT
-                { "TSBT_LabelColor1", Color.WhiteSmoke },
-                { "TSBT_LabelColor2", Color.FromArgb(176, 184, 196) },
-                { "DynamicThemeActiveBtnBGColor", Color.FromArgb(27, 30, 34) },
+                { "TSBT_LabelColor1", "#F5F5F5" },
+                { "TSBT_LabelColor2", "#c3cbd6" },
+                { "DynamicThemeActiveBtnBGColor", "#16191d" },
                 // BORDERS, GRIDS & SEPARATORS
-                { "UIBGColor3", Color.FromArgb(42, 47, 53) },
-                { "DataGridColor", Color.FromArgb(42, 47, 53) },
-                { "CheckBoxUnCheckBorderColor", Color.FromArgb(170, 170, 170) },
-                { "TrackColor", Color.FromArgb(170, 170, 170) },
+                { "DataGridColor", "#293036" },
+                { "CheckBoxUnCheckBorderColor", "#394149" },
+                { "TrackColor", "#394149" },
                 // TRANSPARENCIES / ALPHAS
-                { "TSBT_CloseBG", Color.FromArgb(75, 34, 38, 44) },
-                { "TSBT_CloseBGHover", Color.FromArgb(75, 27, 30, 34) }
+                { "TSBT_CloseBG", "#4B16191D" },
+                { "TSBT_CloseBGHover", "#4B0D0F12" }
             };
+            // HEX TO ARGB
+            // ====================================
+            public static Color HexToARGB(string hex){
+                if (string.IsNullOrWhiteSpace(hex)){
+                    Debug.WriteLine(new ArgumentException("The hex code cannot be empty or null.", nameof(hex)));
+                }
+                //
+                string s = hex.Trim().TrimStart('#');
+                if (s.StartsWith("0x", StringComparison.OrdinalIgnoreCase)) s = s.Substring(2);
+                //
+                if (s.Length == 3) s = $"FF{s[0]}{s[0]}{s[1]}{s[1]}{s[2]}{s[2]}";
+                else if (s.Length == 4) s = $"{s[0]}{s[0]}{s[1]}{s[1]}{s[2]}{s[2]}{s[3]}{s[3]}";
+                else if (s.Length == 6) s = "FF" + s;
+                else if (s.Length != 8) Debug.WriteLine(new FormatException($"Invalid Hex format: '{hex}'"));
+                //
+                return Color.FromArgb((int)Convert.ToUInt32(s, 16));
+            }
             // THEME SWITCHER
             // ====================================
             public static Color ColorMode(int theme, string key){
                 if (theme == 0){
-                    return DarkTheme.ContainsKey(key) ? DarkTheme[key] : Color.Black;
+                    return DarkTheme.ContainsKey(key) ? HexToARGB(DarkTheme[key]) : Color.Black;
                 }else if (theme == 1){
-                    return LightTheme.ContainsKey(key) ? LightTheme[key] : Color.White;
+                    return LightTheme.ContainsKey(key) ? HexToARGB(LightTheme[key]) : Color.White;
                 }
                 return Color.White;
             }
