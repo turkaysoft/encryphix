@@ -1,4 +1,4 @@
-# Encryphix - Advanced File & Folder Encryption Software
+# Encryphix - File & Folder Encryption Software
 
 [![GitHub downloads](https://img.shields.io/github/downloads/turkaysoft/encryphix/total?style=flat&color=1a893c&label=Downloads)](https://github.com/turkaysoft/encryphix/releases)
 [![GitHub stars](https://img.shields.io/github/stars/turkaysoft/encryphix?style=flat&color=0062cc&label=Stars)](https://github.com/turkaysoft/encryphix/stargazers)
