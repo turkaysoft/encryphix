@@ -1,10 +1,12 @@
 ﻿using System;
-using System.IO;
-using System.Text;
-using System.Linq;
-using System.IO.Compression;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Encryphix
 {
@@ -209,7 +211,7 @@ namespace Encryphix
                 EncryptFileWithSession(zipPath, encryptedPath, session, null, true);
                 if (deleteOriginal && Directory.Exists(folderPath))
                 {
-                    SafeDeleteDirectory(folderPath);
+                    SecureDeleteDirectory(folderPath);
                 }
             }
             catch (Exception ex)
@@ -219,7 +221,7 @@ namespace Encryphix
             }
             finally
             {
-                SafeDeleteFile(zipPath);
+                SecureDeleteFile(zipPath);
             }
         }
 
@@ -547,7 +549,7 @@ namespace Encryphix
                             fs.Write(randomBuffer, 0, bytesToWrite);
                             totalBytesWritten += bytesToWrite;
                         }
-                        fs.Flush();
+                        fs.Flush(true);
                     }
                 }
                 File.Delete(path);
@@ -628,6 +630,17 @@ namespace Encryphix
             }
         }
 
+        public static void SecureDeleteDirectory(string path)
+        {
+            if (!Directory.Exists(path)) return;
+            string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+                SecureDeleteFile(file);
+            }
+            SafeDeleteDirectory(path);
+        }
+
         public static void SafeDeleteDirectory(string path)
         {
             try
@@ -644,6 +657,62 @@ namespace Encryphix
             catch (Exception ex)
             {
                 throw new IOException(GetErrorMessage("UnknownError"), ex);
+            }
+        }
+
+        // ============================================================
+        // CLIPBOARD SECURITY: remember copied text, clear on shutdown
+        // ============================================================
+
+        public static class TSClipboardSecurity
+        {
+            internal static string _lastCopiedClipboard = null;
+
+            public static void TrackCopiedText(string copiedText)
+            {
+                _lastCopiedClipboard = copiedText;
+                ScheduleClipboardClear(copiedText);
+            }
+
+            public static void ClearOwnClipboardIfPresent()
+            {
+                try
+                {
+                    if (_lastCopiedClipboard != null && Clipboard.GetText() == _lastCopiedClipboard)
+                    {
+                        Clipboard.Clear();
+                    }
+                }
+                catch { }
+                finally
+                {
+                    _lastCopiedClipboard = null;
+                }
+            }
+
+            private static void ScheduleClipboardClear(string copiedText)
+            {
+                string captured = copiedText;
+                TaskScheduler scheduler;
+                try
+                {
+                    scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                }
+                catch (InvalidOperationException)
+                {
+                    scheduler = TaskScheduler.Default;
+                }
+                Task.Delay(30000).ContinueWith(_ =>
+                {
+                    try
+                    {
+                        if (Clipboard.GetText() == captured)
+                        {
+                            Clipboard.Clear();
+                        }
+                    }
+                    catch { }
+                }, scheduler);
             }
         }
     }

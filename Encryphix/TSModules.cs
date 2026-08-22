@@ -552,6 +552,11 @@ namespace Encryphix{
                 { "DataGridColor", "#d1d7df" },
                 { "CheckBoxUnCheckBorderColor", "#394149" },
                 { "TrackColor", "#D0D6DB" },
+                // STATUS / STRENGTH COLORS
+                { "AccentAqua", "#14786D" },
+                { "AccentOrange", "#9B5500" },
+                { "AccentRed", "#CF1800" },
+                { "AccentGreen", "#1C7A19" },
                 // TRANSPARENCIES / ALPHAS
                 { "TSBT_CloseBG", "#19FFFFFF" },
                 { "TSBT_CloseBGHover", "#32FFFFFF" }
@@ -573,6 +578,11 @@ namespace Encryphix{
                 { "DataGridColor", "#293036" },
                 { "CheckBoxUnCheckBorderColor", "#394149" },
                 { "TrackColor", "#394149" },
+                // STATUS / STRENGTH COLORS
+                { "AccentAqua", "#479EA1" },
+                { "AccentOrange", "#F58806" },
+                { "AccentRed", "#FF4D4D" },
+                { "AccentGreen", "#26BB21" },
                 // TRANSPARENCIES / ALPHAS
                 { "TSBT_CloseBG", "#4B16191D" },
                 { "TSBT_CloseBGHover", "#4B0D0F12" }

@@ -10,6 +10,7 @@
 
 using Microsoft.Win32;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -75,28 +76,28 @@ namespace Encryphix{
         // TS PROTECTION ERROR MESSAGES
         // ======================================================================================================
         public static class TSProtectionErrorMessages{
-            public static Dictionary<string, string> Messages = new Dictionary<string, string>(){
-                { "FolderEncryptionError", "An error occurred while encrypting the folder" },
-                { "SaltReadError", "Failed to read salt data from the encrypted file" },
-                { "FileTypeReadError", "Failed to read file type information" },
-                { "ExtLengthReadError", "Failed to read extension length information" },
-                { "InvalidExtensionLength", "The extension length value is invalid or corrupted" },
-                { "ExtensionReadError", "Failed to read original file extension" },
-                { "IVReadError", "Failed to read initialization vector data" },
-                { "InvalidPasswordOrCorruptFile", "Invalid password or corrupted encrypted file" },
-                { "AccessError", "Access denied while processing the file or directory" },
-                { "UnknownError", "An unknown error occurred" },
-                { "InvalidFolderPath", "Folder path cannot be null or empty" },
-                { "InvalidPassword", "Password cannot be null or empty" },
-                { "FolderNotFound", "The specified folder could not be found" },
-                { "InvalidInputFile", "Input file path cannot be null or empty" },
-                { "InvalidOutputFile", "Output file path cannot be null or empty" },
-                { "FileNotFound", "The specified file could not be found" },
-                { "CorruptedFileOrTampered", "The file has been corrupted or tampered with. Integrity check failed." },
-                { "HMACReadError", "Failed to read data integrity check value from the encrypted file" },
-                { "InvalidSession", "Crypto session cannot be null" },
-                { "InvalidPath", "Path cannot be null or empty" },
-                { "InvalidDirectory", "Invalid directory path" },
+            public static ConcurrentDictionary<string, string> Messages = new ConcurrentDictionary<string, string>(){
+                ["FolderEncryptionError"] = "An error occurred while encrypting the folder",
+                ["SaltReadError"] = "Failed to read salt data from the encrypted file",
+                ["FileTypeReadError"] = "Failed to read file type information",
+                ["ExtLengthReadError"] = "Failed to read extension length information",
+                ["InvalidExtensionLength"] = "The extension length value is invalid or corrupted",
+                ["ExtensionReadError"] = "Failed to read original file extension",
+                ["IVReadError"] = "Failed to read initialization vector data",
+                ["InvalidPasswordOrCorruptFile"] = "Invalid password or corrupted encrypted file",
+                ["AccessError"] = "Access denied while processing the file or directory",
+                ["UnknownError"] = "An unknown error occurred",
+                ["InvalidFolderPath"] = "Folder path cannot be null or empty",
+                ["InvalidPassword"] = "Password cannot be null or empty",
+                ["FolderNotFound"] = "The specified folder could not be found",
+                ["InvalidInputFile"] = "Input file path cannot be null or empty",
+                ["InvalidOutputFile"] = "Output file path cannot be null or empty",
+                ["FileNotFound"] = "The specified file could not be found",
+                ["CorruptedFileOrTampered"] = "The file has been corrupted or tampered with. Integrity check failed.",
+                ["HMACReadError"] = "Failed to read data integrity check value from the encrypted file",
+                ["InvalidSession"] = "Crypto session cannot be null",
+                ["InvalidPath"] = "Path cannot be null or empty",
+                ["InvalidDirectory"] = "Invalid directory path",
             };
         }
         // LOCAL VARIABLES
@@ -238,7 +239,7 @@ namespace Encryphix{
             // LOAD MODULE PRELOAD
             RunSoftwareEngine();
             //
-            Task softwareUpdateCheck = Task.Run(() => Software_update_check(0));
+            Task.Run(() => Software_update_check(0));
         }
         // CLEAR SELECTION
         // ======================================================================================================
@@ -293,7 +294,9 @@ namespace Encryphix{
                     allFiles.Add(path);
                 }else if (Directory.Exists(path)){
                     selectedItems.Add(path);
-                    allFiles.AddRange(Directory.GetFiles(path, "*.*", SearchOption.AllDirectories));
+                    try{
+                        allFiles.AddRange(Directory.GetFiles(path, "*.*", SearchOption.AllDirectories));
+                    }catch (Exception){ }
                 }
             }
             bool hasAes = allFiles.Any(f => string.Equals(Path.GetExtension(f), EncryptedExtension, StringComparison.OrdinalIgnoreCase));
@@ -325,7 +328,9 @@ namespace Encryphix{
                 size = new FileInfo(path).Length;
                 extension = Path.GetExtension(path);
             }else if (Directory.Exists(path)){
-                size = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Sum(f => new FileInfo(f).Length);
+                try{
+                    size = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Sum(f => new FileInfo(f).Length);
+                }catch (Exception){ }
             }
             string typeText = isFile ? software_lang.TSReadLangs("EncryphixUI", "eui_file") : software_lang.TSReadLangs("EncryphixUI", "eui_folder");
             int rowIndex = FAF_DGV.Rows.Add(path, typeText, TS_FormatSize(size));
@@ -412,6 +417,8 @@ namespace Encryphix{
                 BtnBurner.Enabled = false;
                 bool operationSuccess = false;
                 string operationMessage = "";
+                int successCount = 0;
+                int failedCount = 0;
                 string localOutputDir = _currentOutputDirectory;
                 string localPassword = _currentPassword;
                 bool localDeleteOriginal = _currentDeleteOriginal;
@@ -445,7 +452,7 @@ namespace Encryphix{
                                             if (isEncryptedFolder){
                                                 string folderName = Path.GetFileNameWithoutExtension(baseName);
                                                 string outputFolder = Path.GetFullPath(Path.Combine(localOutputDir, folderName));
-                                                if (Directory.Exists(outputFolder)) Directory.Delete(outputFolder, true);
+                                                if (Directory.Exists(outputFolder)) outputFolder = GetUniquePath(outputFolder);
                                                 Directory.CreateDirectory(outputFolder);
                                                 ZipFile.ExtractToDirectory(tempPath, outputFolder);
                                                 if (localDeleteOriginal) SafeDeleteFile(currentFilePath);
@@ -456,25 +463,34 @@ namespace Encryphix{
                                                 if (localDeleteOriginal) SafeDeleteFile(currentFilePath);
                                             }
                                         }finally{
-                                            SafeDeleteFile(tempPath);
+                                            SecureDeleteFile(tempPath);
                                         }
                                     }
                                     lock (progressLock){
+                                        successCount++;
                                         completedFileCount++;
                                         int progress = (int)Math.Floor((completedFileCount * 100.0) / totalFileCount);
                                         if (progress > 100) progress = 100;
-                                        BeginInvoke(new Action(() => {
-                                            Progress_FE.Width = (Progress_BG.Width * progress) / 100;
-                                            Text = $"{TS_VersionEngine.TS_SoftwareVersion(0)} - {(localPmode ? softwareLang.TSReadLangs("EncryphixUI", "eui_decrypted_process") : softwareLang.TSReadLangs("EncryphixUI", "eui_encrypted_process"))} - {progress}%";
-                                        }));
+                                        if (!IsDisposed && IsHandleCreated){
+                                            BeginInvoke(new Action(() => {
+                                                Progress_FE.Width = (Progress_BG.Width * progress) / 100;
+                                                Text = $"{TS_VersionEngine.TS_SoftwareVersion(0)} - {(localPmode ? softwareLang.TSReadLangs("EncryphixUI", "eui_decrypted_process") : softwareLang.TSReadLangs("EncryphixUI", "eui_encrypted_process"))} - {progress}%";
+                                            }));
+                                        }
                                     }
                                 }catch (Exception ex){
+                                    lock (progressLock){
+                                        failedCount++;
+                                        completedFileCount++;
+                                    }
                                     string errorMsg = ex is InvalidDataException || ex is CryptographicException ? string.Format(softwareLang.TSReadLangs("EncryphixUI", "eui_failed_pass_and_broken_file"), "\n") : string.Format(softwareLang.TSReadLangs("EncryphixUI", "eui_failed_process"), ex.Message);
                                     Debug.WriteLine($"Encryption/Decryption error: {ex.Message}");
                                 }
                             }
                         }
-                        operationSuccess = true;
+                        if (successCount > 0){
+                            operationSuccess = true;
+                        }
                     }catch (Exception ex){
                         operationMessage = ex is InvalidDataException || ex is CryptographicException ? string.Format(softwareLang.TSReadLangs("EncryphixUI", "eui_failed_pass_and_broken_file"), "\n") : string.Format(softwareLang.TSReadLangs("EncryphixUI", "eui_failed_process"), ex.Message);
                         Debug.WriteLine($"Operation error: {ex.Message}");
@@ -496,8 +512,15 @@ namespace Encryphix{
                 TextBox_Password.Text = string.Empty;
                 TextBox_SaveFolder.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                 CheckOrjFileDelete.Checked = false;
-                if (operationSuccess){
+                if (operationSuccess && failedCount == 0){
                     TS_MessageBoxEngine.TS_MessageBox(this, 1, p_mode ? softwareLang.TSReadLangs("EncryphixUI", "eui_decrypt_success") : softwareLang.TSReadLangs("EncryphixUI", "eui_encrypt_success"));
+                }else if (failedCount > 0){
+                    if (successCount > 0){
+                        operationMessage = string.Format(softwareLang.TSReadLangs("EncryphixUI", "eui_partial_success"), successCount, failedCount);
+                    }else{
+                        operationMessage = string.Format(softwareLang.TSReadLangs("EncryphixUI", "eui_all_failed"), failedCount);
+                    }
+                    TS_MessageBoxEngine.TS_MessageBox(this, 3, operationMessage);
                 }else if (!string.IsNullOrEmpty(operationMessage)){
                     TS_MessageBoxEngine.TS_MessageBox(this, 3, operationMessage);
                 }
@@ -519,54 +542,44 @@ namespace Encryphix{
         // ======================================================================================================
         private readonly RandomNumberGenerator _secureRng = RandomNumberGenerator.Create();
         private void BtnRndPssGen_Click(object sender, EventArgs e){
-            GenerateRandomPassword();
+            GenerateRandomPassword(SecureRandomIndex(5) + 12);
         }
-        private void GenerateRandomPassword(){
-            string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string lower = "abcdefghijklmnopqrstuvwxyz";
-            string digits = "0123456789";
-            string symbols = "!@#$%^&*()-_=+?";
-            string allChars = upper + lower + digits + symbols;
-            byte[] buffer = new byte[1];
-            int passLength;
-            do{
-                _secureRng.GetBytes(buffer);
-            } while (buffer[0] >= byte.MaxValue - (byte.MaxValue % 5));
-            passLength = 12 + (buffer[0] % 5);
-            char[] chars = new char[passLength];
-            string[] categories = new[] { upper, lower, digits, symbols };
+        private void GenerateRandomPassword(int passwordLength = 14){
+            const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lower = "abcdefghijklmnopqrstuvwxyz";
+            const string digits = "0123456789";
+            const string symbols = "!@#$%^&*()-_=+";
+            //
+            string[] categories = { upper, lower, digits, symbols };
+            string allChars = string.Concat(categories);
+            //
+            char[] password = new char[passwordLength];
+            //
             for (int i = 0; i < categories.Length; i++){
-                string category = categories[i];
-                int catSize = category.Length;
-                int catThreshold = byte.MaxValue - (byte.MaxValue % catSize);
-                byte catByte;
-                do{
-                    _secureRng.GetBytes(buffer);
-                    catByte = buffer[0];
-                } while (catByte >= catThreshold);
-
-                chars[i] = category[catByte % catSize];
+                password[i] = categories[i][SecureRandomIndex(categories[i].Length)];
             }
-            int allCharsSize = allChars.Length;
-            int allRejectionThreshold = byte.MaxValue - (byte.MaxValue % allCharsSize);
-            for (int i = categories.Length; i < passLength; i++){
-                byte randByte;
-                do{
-                    _secureRng.GetBytes(buffer);
-                    randByte = buffer[0];
-                } while (randByte >= allRejectionThreshold);
-                chars[i] = allChars[randByte % allCharsSize];
+            //
+            for (int i = categories.Length; i < passwordLength; i++){
+                password[i] = allChars[SecureRandomIndex(allChars.Length)];
             }
-            for (int i = passLength - 1; i > 0; i--){
-                byte swapByte;
-                do{
-                    _secureRng.GetBytes(buffer);
-                    swapByte = buffer[0];
-                } while (swapByte >= byte.MaxValue - (byte.MaxValue % (i + 1)));
-                int j = swapByte % (i + 1);
-                (chars[j], chars[i]) = (chars[i], chars[j]);
+            //
+            for (int i = passwordLength - 1; i > 0; i--){
+                int j = SecureRandomIndex(i + 1);
+                (password[i], password[j]) = (password[j], password[i]);
             }
-            TextBox_Password.Text = new string(chars);
+            //
+            TextBox_Password.Text = new string(password);
+        }
+        private int SecureRandomIndex(int maxExclusive){
+            int threshold = 256 - (256 % maxExclusive);
+            byte[] buffer = new byte[1];
+            //
+            while (true){
+                _secureRng.GetBytes(buffer);
+                if (buffer[0] < threshold){
+                    return buffer[0] % maxExclusive;
+                }
+            }
         }
         // COPY PASSWORD (with security warning)
         // ======================================================================================================
@@ -951,6 +964,8 @@ namespace Encryphix{
                 MainToolTip.SetToolTip(BtnCopyPassword, software_lang.TSReadLangs("EncryphixGraphics", "eg_password_copy_hover"));
                 MainToolTip.SetToolTip(BtnSavePath, software_lang.TSReadLangs("EncryphixGraphics", "eg_saved_folder_hover"));
                 MainToolTip.SetToolTip(CheckOrjFileDelete, software_lang.TSReadLangs("EncryphixGraphics", "eg_saved_orj_file_hover"));
+                //
+                Software_other_page_preloader();
             }catch (Exception){ }
         }
         // STARTUP SETINGS
@@ -1127,6 +1142,14 @@ namespace Encryphix{
         // EXIT
         // ======================================================================================================
         private void Software_exit() { Application.Exit(); }
-        private void Encryphix_FormClosing(object sender, FormClosingEventArgs e){ Software_exit(); }
+        private void Encryphix_FormClosing(object sender, FormClosingEventArgs e){
+            if (_isProcessing){
+                e.Cancel = true;
+                TSGetLangs software_lang = new TSGetLangs(lang_path);
+                TS_MessageBoxEngine.TS_MessageBox(this, 2, string.Format(software_lang.TSReadLangs("EncryphixUI", "eui_processing_close"), "\n\n"));
+                return;
+            }
+            Software_exit();
+        }
     }
 }
