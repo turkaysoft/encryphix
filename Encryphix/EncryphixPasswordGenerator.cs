@@ -232,6 +232,14 @@ namespace Encryphix{
         }
         // LOAD
         // ======================================================================================================
+        protected override void OnDpiChanged(DpiChangedEventArgs e){
+            base.OnDpiChanged(e);
+            try{
+                Password_generator_preloader();
+                this.PerformLayout();
+                this.Invalidate(true);
+            }catch{ }
+        }
         private void EncryphixPasswordGenerator_Load(object sender, EventArgs e){
             AcceptButton = BtnGenPass;
             TSGetLangs lang = new TSGetLangs(EncryphixMain.lang_path);

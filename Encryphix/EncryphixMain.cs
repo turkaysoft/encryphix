@@ -66,8 +66,9 @@ namespace Encryphix{
             russianToolStripMenuItem.Click += LanguageToolStripMenuItem_Click;
             spanishToolStripMenuItem.Click += LanguageToolStripMenuItem_Click;
             turkishToolStripMenuItem.Click += LanguageToolStripMenuItem_Click;
-            //
-            SystemEvents.UserPreferenceChanged += (s, e) => TSUseSystemTheme();
+            // DYNAMIC THEME LISTENER
+            // ==================
+            SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
         }
         // GLOBAL VARIABLES
         // ======================================================================================================
@@ -116,7 +117,7 @@ namespace Encryphix{
             protected override void OnRenderItemCheck(ToolStripItemImageRenderEventArgs e){
                 Graphics g = e.Graphics;
                 g.SmoothingMode = SmoothingMode.AntiAlias;
-                float dpiScale = g.DpiX / 96f;
+                float dpiScale = TSDpiHelper.Scale(g.DpiX);
                 Rectangle rect = e.ImageRectangle;
                 using (Pen anti_alias_pen = new Pen(header_colors[2], 2.2f * dpiScale)){
                     anti_alias_pen.StartCap = LineCap.Round;
@@ -130,6 +131,8 @@ namespace Encryphix{
             }
         }
         private class HeaderColors : ProfessionalColorTable{
+            public override Color MenuStripGradientBegin => header_colors[0];
+            public override Color MenuStripGradientEnd => header_colors[0];
             public override Color MenuItemSelected => header_colors[0];
             public override Color ToolStripDropDownBackground => header_colors[0];
             public override Color ImageMarginGradientBegin => header_colors[0];
@@ -152,6 +155,7 @@ namespace Encryphix{
         // LOAD SOFTWARE SETTINGS
         // ======================================================================================================
         private void RunSoftwareEngine(){
+            try { TSDpiHelper.ScaleToolStripRecursive(HeaderMenu, this.DeviceDpi); } catch { }
             // DOUBLE BUFFERS
             typeof(DataGridView).InvokeMember("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty, null, FAF_DGV, new object[] { true });
             // ADD TEMPORT COLUMNS
@@ -159,25 +163,18 @@ namespace Encryphix{
             FAF_DGV.Columns.Add("FP", "Type");
             FAF_DGV.Columns.Add("FP", "Size");
             FAF_DGV.Columns.Add("FP", "Status");
-            FAF_DGV.RowTemplate.Height = (int)(32 * this.DeviceDpi / 96f);
+            TSDpiHelper.ScaleDataGridView(FAF_DGV, null, 32);
             FAF_DGV.Columns[0].FillWeight = 5;
             FAF_DGV.Columns[1].FillWeight = 2;
             FAF_DGV.Columns[2].FillWeight = 1;
             FAF_DGV.Columns[3].FillWeight = 2;
-            foreach (DataGridViewColumn columnPadding in FAF_DGV.Columns){
-                int scaledPadding = (int)(3 * this.DeviceDpi / 96f);
-                columnPadding.DefaultCellStyle.Padding = new Padding(scaledPadding, 0, 0, 0);
-            }
             // NOT SORTABLE SET
             foreach (DataGridViewColumn OSD_Column in FAF_DGV.Columns){
                 OSD_Column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             FAF_DGV.ClearSelection();
-            // DPI SET TEXTBOX BUTTONS
-            BtnShowPassword.Height = TextBox_Password.Height + 2;
-            BtnRndPssGen.Height = TextBox_Password.Height + 2;
-            BtnCopyPassword.Height = TextBox_Password.Height + 2;
-            BtnSavePath.Height = TextBox_SaveFolder.Height + 2;
+            // DPI SET TEXTBOX BUTTONS + PANEL ROW LAYOUT (base values, idempotent)
+            SyncPanelLayout();
             // COMBOBOX ADD ITEMS
             Combo_Compress.Items.Add("Low");
             Combo_Compress.Items.Add("Medium");
@@ -231,6 +228,47 @@ namespace Encryphix{
         // MAIN TOOLTIP SETTINGS
         // ======================================================================================================
         private void MainToolTip_Draw(object sender, DrawToolTipEventArgs e){ e.DrawBackground(); e.DrawBorder(); e.DrawText(); }
+        // DPI SCALING
+        // ======================================================================================================
+        private void ApplyDpiScaling(){
+            if (IsDisposed || Disposing) return;
+            TSDpiHelper.ScaleDataGridView(FAF_DGV, null, 32);
+            TSDpiHelper.ScaleToolStripRecursive(HeaderMenu, this.DeviceDpi);
+            SyncPanelLayout();
+        }
+        private void SyncPanelLayout(){
+            if (IsDisposed || Disposing) return;
+            try{
+                int d = this.DeviceDpi;
+                BtnShowPassword.Height = TextBox_Password.Height + 2;
+                BtnRndPssGen.Height = TextBox_Password.Height + 2;
+                BtnCopyPassword.Height = TextBox_Password.Height + 2;
+                BtnSavePath.Height = TextBox_SaveFolder.Height + 2;
+                Label_Password.Top = TSDpiHelper.ScalePx(13, d);
+                TextBox_Password.Top = TSDpiHelper.ScalePx(38, d);
+                BtnShowPassword.Top = TSDpiHelper.ScalePx(37, d);
+                BtnRndPssGen.Top = TSDpiHelper.ScalePx(37, d);
+                BtnCopyPassword.Top = TSDpiHelper.ScalePx(37, d);
+                Label_SaveFolder.Top = TSDpiHelper.ScalePx(81, d);
+                TextBox_SaveFolder.Top = TSDpiHelper.ScalePx(106, d);
+                BtnSavePath.Top = TSDpiHelper.ScalePx(105, d);
+                Label_Compress.Top = TSDpiHelper.ScalePx(13, d);
+                Combo_Compress.Top = TSDpiHelper.ScalePx(36, d);
+                CheckOrjFileDelete.Top = TSDpiHelper.ScalePx(108, d);
+            }catch{ }
+        }
+        protected override void OnDpiChanged(DpiChangedEventArgs e){
+            base.OnDpiChanged(e);
+            try{
+                this.SuspendLayout();
+                ApplyDpiScaling();
+                if (e.DeviceDpiNew != e.DeviceDpiOld)
+                    Theme_engine(theme);
+                this.ResumeLayout(true);
+                this.PerformLayout();
+                this.Invalidate(true);
+            }catch{ }
+        }
         // LOAD
         // ====================================================================================================== 
         private void Encryphix_Load(object sender, EventArgs e){
@@ -238,8 +276,9 @@ namespace Encryphix{
             HeaderMenu.Cursor = Cursors.Hand;
             // LOAD MODULE PRELOAD
             RunSoftwareEngine();
-            //
-            Task.Run(() => Software_update_check(0));
+            // SOFTWARE UPDATE CHECK NATIVE
+            // ====================================
+            try { _ = Software_update_check(0); } catch (Exception) { }
         }
         // CLEAR SELECTION
         // ======================================================================================================
@@ -637,7 +676,18 @@ namespace Encryphix{
         private void DarkThemeToolStripMenuItem_Click(object sender, EventArgs e){
             themeSystem = 0; Theme_engine(0); SaveTheme(0); Select_theme_active(sender);
         }
-        private void TSUseSystemTheme() { if (themeSystem == 2) Theme_engine(TSThemeModeHelper.GetSystemTheme(2)); }
+        private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e){
+            TSUseSystemTheme();
+        }
+        private void TSUseSystemTheme(){
+            if (themeSystem != 2) return;
+            if (IsDisposed || Disposing) return;
+            if (InvokeRequired){
+                try { BeginInvoke(new Action(() => TSUseSystemTheme())); } catch { }
+                return;
+            }
+            Theme_engine(TSThemeModeHelper.GetSystemTheme(2));
+        }
         private void SaveTheme(int ts){
             // SAVE CURRENT THEME
             try{
@@ -649,6 +699,7 @@ namespace Encryphix{
         // ======================================================================================================
         private void Theme_engine(int ts){
             try{
+                try { TSDpiHelper.ScaleToolStripRecursive(HeaderMenu, this.DeviceDpi); } catch { }
                 theme = ts;
                 //
                 TSThemeModeHelper.SetThemeMode(ts == 0);
@@ -656,15 +707,15 @@ namespace Encryphix{
                 //
                 if (theme == 1){
                     // SETTINGS
-                    TSImageRenderer(settingsToolStripMenuItem, Properties.Resources.tm_settings_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(themeToolStripMenuItem, Properties.Resources.tm_theme_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(languageToolStripMenuItem, Properties.Resources.tm_language_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(startupToolStripMenuItem, Properties.Resources.tm_startup_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(safetyWarningsToolStripMenuItem, Properties.Resources.tm_safety_warnings_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(checkForUpdateToolStripMenuItem, Properties.Resources.tm_update_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(passwordGeneratorToolStripMenuItem, Properties.Resources.tm_password_generator_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(donateToolStripMenuItem, Properties.Resources.tm_donate_light, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(aboutToolStripMenuItem, Properties.Resources.tm_about_light, 0, ContentAlignment.MiddleRight);
+                    TSImageRenderer(settingsToolStripMenuItem, Properties.Resources.tm_settings_light, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(themeToolStripMenuItem, Properties.Resources.tm_theme_light, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(languageToolStripMenuItem, Properties.Resources.tm_language_light, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(startupToolStripMenuItem, Properties.Resources.tm_startup_light, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(safetyWarningsToolStripMenuItem, Properties.Resources.tm_safety_warnings_light, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(checkForUpdatesToolStripMenuItem, Properties.Resources.tm_update_light, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(passwordGeneratorToolStripMenuItem, Properties.Resources.tm_password_generator_light, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(donateToolStripMenuItem, Properties.Resources.tm_donate_light, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(aboutToolStripMenuItem, Properties.Resources.tm_about_light, 0, ContentAlignment.MiddleCenter);
                     //
                     TSImageRenderer(BtnShowPassword, p_visible ? Properties.Resources.ct_hide_password_light : Properties.Resources.ct_show_password_light, 10, ContentAlignment.MiddleCenter);
                     TSImageRenderer(BtnRndPssGen, Properties.Resources.ct_generate_light, 10, ContentAlignment.MiddleCenter);
@@ -675,15 +726,15 @@ namespace Encryphix{
                     TSImageRenderer(BtnBurner, p_mode ? Properties.Resources.ct_decrypt_light : Properties.Resources.ct_encrypt_light, 19, ContentAlignment.MiddleLeft);
                 }else if (theme == 0){
                     // SETTINGS
-                    TSImageRenderer(settingsToolStripMenuItem, Properties.Resources.tm_settings_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(themeToolStripMenuItem, Properties.Resources.tm_theme_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(languageToolStripMenuItem, Properties.Resources.tm_language_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(startupToolStripMenuItem, Properties.Resources.tm_startup_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(safetyWarningsToolStripMenuItem, Properties.Resources.tm_safety_warnings_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(checkForUpdateToolStripMenuItem, Properties.Resources.tm_update_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(passwordGeneratorToolStripMenuItem, Properties.Resources.tm_password_generator_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(donateToolStripMenuItem, Properties.Resources.tm_donate_dark, 0, ContentAlignment.MiddleRight);
-                    TSImageRenderer(aboutToolStripMenuItem, Properties.Resources.tm_about_dark, 0, ContentAlignment.MiddleRight);
+                    TSImageRenderer(settingsToolStripMenuItem, Properties.Resources.tm_settings_dark, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(themeToolStripMenuItem, Properties.Resources.tm_theme_dark, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(languageToolStripMenuItem, Properties.Resources.tm_language_dark, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(startupToolStripMenuItem, Properties.Resources.tm_startup_dark, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(safetyWarningsToolStripMenuItem, Properties.Resources.tm_safety_warnings_dark, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(checkForUpdatesToolStripMenuItem, Properties.Resources.tm_update_dark, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(passwordGeneratorToolStripMenuItem, Properties.Resources.tm_password_generator_dark, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(donateToolStripMenuItem, Properties.Resources.tm_donate_dark, 0, ContentAlignment.MiddleCenter);
+                    TSImageRenderer(aboutToolStripMenuItem, Properties.Resources.tm_about_dark, 0, ContentAlignment.MiddleCenter);
                     //
                     TSImageRenderer(BtnShowPassword, p_visible ? Properties.Resources.ct_hide_password_dark : Properties.Resources.ct_show_password_dark, 10, ContentAlignment.MiddleCenter);
                     TSImageRenderer(BtnRndPssGen, Properties.Resources.ct_generate_dark, 10, ContentAlignment.MiddleCenter);
@@ -917,7 +968,7 @@ namespace Encryphix{
                 safetyWarningsOnToolStripMenuItem.Text = software_lang.TSReadLangs("SafetyWarnings", "sw_on");
                 safetyWarningsOffToolStripMenuItem.Text = software_lang.TSReadLangs("SafetyWarnings", "sw_off");
                 // UPDATE
-                checkForUpdateToolStripMenuItem.Text = software_lang.TSReadLangs("HeaderMenu", "header_menu_update");
+                checkForUpdatesToolStripMenuItem.Text = software_lang.TSReadLangs("HeaderMenu", "header_menu_update");
                 // PASSWORD GENERATOR
                 passwordGeneratorToolStripMenuItem.Text = software_lang.TSReadLangs("HeaderMenu", "header_menu_pass_gen");
                 // DONATE
@@ -1031,10 +1082,12 @@ namespace Encryphix{
         }
         // UPDATE CHECK ENGINE
         // ======================================================================================================
-        private void CheckForUpdateToolStripMenuItem_Click(object sender, EventArgs e){
-            Task.Run(() => Software_update_check(1));
+        private void CheckForUpdatesToolStripMenuItem_Click(object sender, EventArgs e){
+            try{
+                _ = Software_update_check(1);
+            }catch (Exception){ }
         }
-        public async void Software_update_check(int _check_update_ui){
+        public async Task Software_update_check(int _check_update_ui){
             try{
                 TSGetLangs software_lang = new TSGetLangs(lang_path);
                 SetUpdateMenuEnabled(false);
@@ -1048,7 +1101,7 @@ namespace Encryphix{
                     handler.UseProxy = false;
                     using (HttpClient httpClient = new HttpClient(handler)){
                         httpClient.Timeout = TimeSpan.FromSeconds(15);
-                        httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue{ NoCache = true, NoStore = true, MustRevalidate = true };
+                        httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true, NoStore = true, MustRevalidate = true };
                         httpClient.DefaultRequestHeaders.Pragma.ParseAdd("no-cache");
                         string versionUrl = TS_LinkSystem.github_link_lv;
                         versionUrl += (versionUrl.Contains("?") ? "&" : "?") + "_ts=" + DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -1091,18 +1144,23 @@ namespace Encryphix{
                 }
             }catch (Exception ex){
                 Debug.WriteLine(ex, "Software_update_check()");
-                TSGetLangs software_lang = new TSGetLangs(lang_path);
-                TS_MessageBoxEngine.TS_MessageBox(this, 3, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_error"), "\n\n", ex.Message), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
+                if (_check_update_ui == 1 && !IsDisposed && !Disposing){
+                    TSGetLangs software_lang = new TSGetLangs(lang_path);
+                    TS_MessageBoxEngine.TS_MessageBox(this, 3, string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_error"), "\n\n", ex.Message), string.Format(software_lang.TSReadLangs("SoftwareUpdate", "su_title"), Application.ProductName));
+                }
             }finally{
                 SetUpdateMenuEnabled(true);
             }
         }
         private void SetUpdateMenuEnabled(bool enabled){
-            if (InvokeRequired){
-                BeginInvoke(new Action(() => checkForUpdateToolStripMenuItem.Enabled = enabled));
-            }else{
-                checkForUpdateToolStripMenuItem.Enabled = enabled;
-            }
+            try{
+                if (IsDisposed || Disposing) return;
+                if (InvokeRequired){
+                    BeginInvoke(new Action(() => checkForUpdatesToolStripMenuItem.Enabled = enabled));
+                }else{
+                    checkForUpdatesToolStripMenuItem.Enabled = enabled;
+                }
+            }catch { }
         }
         // DONATE LINK
         // ======================================================================================================
@@ -1141,7 +1199,6 @@ namespace Encryphix{
         }
         // EXIT
         // ======================================================================================================
-        private void Software_exit() { Application.Exit(); }
         private void Encryphix_FormClosing(object sender, FormClosingEventArgs e){
             if (_isProcessing){
                 e.Cancel = true;
@@ -1149,7 +1206,8 @@ namespace Encryphix{
                 TS_MessageBoxEngine.TS_MessageBox(this, 2, string.Format(software_lang.TSReadLangs("EncryphixUI", "eui_processing_close"), "\n\n"));
                 return;
             }
-            Software_exit();
+            try { SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged; } catch { }
+            Application.Exit();
         }
     }
 }
